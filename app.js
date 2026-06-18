@@ -1947,6 +1947,57 @@ const opicState = {
   listening: false,
 };
 
+const opicLevelRubrics = {
+  intermediate: {
+    label: "IM 목표",
+    range: "IM1~IM2",
+    targetWords: 45,
+    connectorMinimum: 2,
+    detailMinimum: 2,
+    headline: "핵심 과업을 짧고 안정적으로 완성하는 단계입니다.",
+    targetAdvice: "첫 문장에 직접 답하고, 이유와 한 가지 장면을 붙여 4~5문장으로 마무리하세요.",
+    structureAdvice: "because, so, after that 같은 기본 연결어로 문장을 끊기지 않게 이어가세요.",
+    detailAdvice: "언제, 어디서, 누구와 같은 쉬운 정보 2개를 넣으면 IM 답변이 훨씬 선명해집니다.",
+    finalAdvice: [
+      ["답변 완성도", "질문에 대한 직접 답변을 첫 문장에 놓고 마지막에 짧은 느낌을 붙이세요."],
+      ["기본 연결", "because, so, after that 중 2개 이상을 써서 단문 나열을 줄이세요."],
+      ["시제 안정", "경험 문항은 과거, 루틴 문항은 현재 시제를 처음부터 분명히 잡으세요."],
+    ],
+  },
+  upper: {
+    label: "IH 목표",
+    range: "IM3~IH",
+    targetWords: 75,
+    connectorMinimum: 3,
+    detailMinimum: 3,
+    headline: "경험을 시간 순서, 문제 해결, 비교로 확장하는 단계입니다.",
+    targetAdvice: "상황 설명, 구체 행동, 결과, 느낀 점을 70~90단어 흐름으로 연결하세요.",
+    structureAdvice: "first, after that, however, for example을 섞어 이야기의 전환을 보여주세요.",
+    detailAdvice: "장소, 상대방 반응, 선택 이유처럼 채점자가 장면을 그릴 수 있는 단서를 3개 이상 넣으세요.",
+    finalAdvice: [
+      ["스토리 전개", "상황 → 행동 → 결과 → 배운 점의 4단계로 답변을 확장하세요."],
+      ["문제 해결력", "Role play에서는 문제 설명 뒤에 현실적인 해결책 2개를 제안하세요."],
+      ["구체성", "장소, 시간, 상대 반응을 넣어 암기문이 아니라 실제 경험처럼 들리게 하세요."],
+    ],
+  },
+  advanced: {
+    label: "AL 목표",
+    range: "IH~AL",
+    targetWords: 100,
+    connectorMinimum: 4,
+    detailMinimum: 4,
+    headline: "입장, 근거, 반론까지 자연스럽게 다루는 단계입니다.",
+    targetAdvice: "명확한 입장, 근거 2개, 반대 관점 인정, 결론을 100단어 이상으로 구성하세요.",
+    structureAdvice: "however, on the other hand, for instance, from my perspective 같은 담화 표지를 적극적으로 쓰세요.",
+    detailAdvice: "개인 경험을 사회적 관찰이나 일반화와 연결하면 AL 답변에 가까워집니다.",
+    finalAdvice: [
+      ["논리 밀도", "입장 → 근거 → 예시 → 반론 인정 → 결론의 구조로 추상 질문을 처리하세요."],
+      ["담화 표지", "however, in that sense, from my perspective로 문장 간 논리 관계를 드러내세요."],
+      ["자연스러운 확장", "개인 경험에서 끝내지 말고 더 넓은 사회적 의미나 가치 판단으로 마무리하세요."],
+    ],
+  },
+};
+
 const allExpressions = [
   ...allNaturalExpressions,
   ...businessExpressionPool,
@@ -3293,6 +3344,33 @@ function buildOpicQuestions(topicIds, level) {
   const personalizedQuestions = [...shuffled, ...supplemental].slice(0, 7);
   const mainTopic = opicTopicBanks[topicIds[0]];
   const secondTopic = opicTopicBanks[topicIds[1]];
+  const levelChallengeQuestion = {
+    intermediate: {
+      type: "COMPARISON",
+      prompt: `Compare how people enjoy ${mainTopic.label} now with how they enjoyed it in the past.`,
+      hint: "과거 → 현재 → 가장 큰 차이와 내 생각",
+      keywords: ["past", "now", "used to", "different", "because"],
+    },
+    upper: {
+      type: "UNEXPECTED SITUATION",
+      prompt: `You planned to enjoy ${mainTopic.label} with a friend, but something suddenly went wrong. Explain the problem and suggest two realistic solutions.`,
+      hint: "문제 설명 → 상대 배려 → 해결책 2개 → 다음 행동",
+      keywords: ["problem", "sorry", "instead", "another", "because"],
+    },
+    advanced: {
+      type: "SOCIAL ISSUE",
+      prompt:
+        "Many people rely heavily on technology in their daily lives. What are the benefits and drawbacks, and what is your opinion?",
+      hint: "현상 설명 → 장점 → 단점 → 나의 입장과 근거",
+      keywords: ["benefit", "however", "problem", "opinion", "because"],
+    },
+  }[level] || {
+    type: "COMPARISON",
+    prompt: `Compare how people enjoy ${mainTopic.label} now with how they enjoyed it in the past.`,
+    hint: "과거 → 현재 → 가장 큰 차이와 내 생각",
+    keywords: ["past", "now", "used to", "different", "because"],
+  };
+
   const questions = [
     {
       type: "WARM-UP",
@@ -3320,20 +3398,7 @@ function buildOpicQuestions(topicIds, level) {
       hint: "원래 계획 → 갑작스러운 변화 → 대처와 결과",
       keywords: ["planned", "suddenly", "so", "decided", "finally"],
     },
-    level === "advanced"
-      ? {
-          type: "SOCIAL ISSUE",
-          prompt:
-            "Many people rely heavily on technology in their daily lives. What are the benefits and drawbacks, and what is your opinion?",
-          hint: "현상 설명 → 장점 → 단점 → 나의 입장과 근거",
-          keywords: ["benefit", "however", "problem", "opinion", "because"],
-        }
-      : {
-          type: "COMPARISON",
-          prompt: `Compare how people enjoy ${mainTopic.label} now with how they enjoyed it in the past.`,
-          hint: "과거 → 현재 → 가장 큰 차이와 내 생각",
-          keywords: ["past", "now", "used to", "different", "because"],
-        },
+    levelChallengeQuestion,
   ];
   return questions.slice(0, 12);
 }
@@ -3418,11 +3483,8 @@ function renderOpicQuestion() {
 function evaluateOpicAnswer(answer, question, duration) {
   const words = countEnglishWords(answer);
   const lower = answer.toLowerCase();
-  const targetWords = {
-    intermediate: 45,
-    upper: 75,
-    advanced: 100,
-  }[opicState.level];
+  const rubric = opicLevelRubrics[opicState.level] || opicLevelRubrics.intermediate;
+  const targetWords = rubric.targetWords;
   const keywordHits = question.keywords.filter((keyword) => lower.includes(keyword)).length;
   const connectors = [
     "because",
@@ -3439,16 +3501,32 @@ function evaluateOpicAnswer(answer, question, duration) {
     "in the past",
     "these days",
   ].filter((phrase) => lower.includes(phrase));
+  const discourseMarkers = [
+    "in my opinion",
+    "from my perspective",
+    "on the other hand",
+    "for instance",
+    "in that sense",
+    "as a result",
+  ].filter((phrase) => lower.includes(phrase));
   const details = (answer.match(/\b\d+\b/g) || []).length +
     (answer.match(/\b(when|where|who|which|that)\b/gi) || []).length;
-  const task = Math.min(100, 36 + keywordHits * 11 + Math.min(words / targetWords, 1) * 30);
-  const structure = Math.min(100, 40 + connectors.length * 9 + (words >= 35 ? 15 : 0));
-  const detail = Math.min(100, 34 + details * 6 + Math.min(words / targetWords, 1) * 42);
+  const wordRatio = Math.min(words / targetWords, 1);
+  const connectorRatio = Math.min(connectors.length / rubric.connectorMinimum, 1);
+  const detailRatio = Math.min(details / rubric.detailMinimum, 1);
+  const advancedSignal = opicState.level === "advanced" ? discourseMarkers.length * 4 : 0;
+  const task = Math.min(100, 34 + keywordHits * 11 + wordRatio * 32);
+  const structure = Math.min(
+    100,
+    36 + connectorRatio * 32 + Math.min(connectors.length, 5) * 4 + advancedSignal,
+  );
+  const detail = Math.min(100, 32 + detailRatio * 34 + wordRatio * 24 + Math.min(details, 5) * 3);
   const naturalness = Math.min(
     100,
     44 +
       (answer.match(/\b(I've|I'm|I'd|don't|didn't|can't|it's|that's)\b/gi) || []).length * 5 +
-      Math.min(duration, 90) / 3,
+      Math.min(duration, 90) / 3 +
+      Math.min(connectors.length, 4) * 2,
   );
   const total = Math.round(task * 0.32 + structure * 0.26 + detail * 0.24 + naturalness * 0.18);
 
@@ -3463,23 +3541,44 @@ function evaluateOpicAnswer(answer, question, duration) {
     grammarTip = "과거 경험 문항에서는 과거 시제를 더 분명하게 표시해보세요.";
   }
 
+  const targetGaps = [];
+  if (words < targetWords) targetGaps.push(`${targetWords - words}단어 부족`);
+  if (connectors.length < rubric.connectorMinimum) {
+    targetGaps.push(`연결어 ${rubric.connectorMinimum - connectors.length}개 부족`);
+  }
+  if (details < rubric.detailMinimum) {
+    targetGaps.push(`구체 단서 ${rubric.detailMinimum - details}개 부족`);
+  }
+
+  const targetDiagnosis = targetGaps.length
+    ? `${rubric.label} 기준으로 ${targetGaps.slice(0, 2).join(", ")}합니다.`
+    : `${rubric.label} 기준의 길이, 연결, 구체성 목표를 충족했어요.`;
   const strength =
-    words >= targetWords
-      ? "충분한 길이로 답변을 확장했어요."
+    words >= targetWords && connectors.length >= rubric.connectorMinimum
+      ? `${rubric.label}에 필요한 답변 길이와 흐름을 확보했어요.`
       : keywordHits >= 3
-        ? "질문의 핵심 과업을 놓치지 않았어요."
+        ? "질문의 핵심 과업을 놓치지 않고 답변했어요."
         : "답변을 멈추지 않고 완성한 점이 좋아요.";
   const next =
-    connectors.length < 2
-      ? "because, after that, however 같은 연결어를 2개 이상 넣어보세요."
-      : words < targetWords
-        ? `구체적인 장면과 느낌을 더해 ${targetWords}단어 안팎까지 늘려보세요.`
-        : "결론에서 그 경험이 나에게 준 변화나 의견을 한 문장으로 정리해보세요.";
+    words < targetWords
+      ? `${rubric.label}에서는 ${targetWords}단어 안팎이 필요해요. ${rubric.targetAdvice}`
+      : connectors.length < rubric.connectorMinimum
+        ? `${rubric.label} 기준으로 연결어 ${rubric.connectorMinimum}개 이상이 안정적입니다. ${rubric.structureAdvice}`
+        : details < rubric.detailMinimum
+          ? rubric.detailAdvice
+          : rubric.targetAdvice;
+  const expertTip =
+    opicState.level === "advanced" && discourseMarkers.length < 2
+      ? "AL 목표라면 however, from my perspective처럼 관점 전환 표현을 2개 이상 넣어 논리 밀도를 높이세요."
+      : opicState.level === "upper" && !/\b(solution|instead|recommend|suggest|decided)\b/i.test(answer) && /ROLE PLAY|PROBLEM|SITUATION/.test(question.type)
+        ? "IH 목표에서는 문제 상황 뒤에 해결책을 분명히 제안해야 점수가 안정됩니다."
+        : `${rubric.range} 범위에서는 ${rubric.headline}`;
 
   return {
     answer,
     duration,
     words,
+    targetWords,
     total,
     metrics: {
       task: Math.round(task),
@@ -3487,9 +3586,13 @@ function evaluateOpicAnswer(answer, question, duration) {
       detail: Math.round(detail),
       naturalness: Math.round(naturalness),
     },
+    levelLabel: rubric.label,
+    targetRange: rubric.range,
+    targetDiagnosis,
     strength,
     next,
     grammarTip,
+    expertTip,
   };
 }
 
@@ -3502,11 +3605,14 @@ function renderOpicQuestionFeedback(result) {
       <small>PRACTICE SCORE</small>
     </div>
     <div class="opic-feedback-body">
-      <span class="section-kicker">INSTANT FEEDBACK</span>
-      <h3>${result.strength}</h3>
+      <span class="section-kicker">INSTANT FEEDBACK · ${escapeHtml(result.levelLabel)}</span>
+      <h3>${escapeHtml(result.strength)}</h3>
+      <p class="opic-target-line">${escapeHtml(result.targetDiagnosis)} · ${result.words}/${result.targetWords} words</p>
       <div class="opic-feedback-points">
-        <p><i data-lucide="wand-sparkles"></i><span><strong>더 자연스럽게</strong>${result.grammarTip}</span></p>
-        <p><i data-lucide="arrow-up-right"></i><span><strong>다음 답변 목표</strong>${result.next}</span></p>
+        <p><i data-lucide="target"></i><span><strong>목표 범위</strong>${escapeHtml(result.targetRange)} 기준으로 분석했어요.</span></p>
+        <p><i data-lucide="wand-sparkles"></i><span><strong>더 자연스럽게</strong>${escapeHtml(result.grammarTip)}</span></p>
+        <p><i data-lucide="arrow-up-right"></i><span><strong>다음 답변 목표</strong>${escapeHtml(result.next)}</span></p>
+        <p><i data-lucide="badge-check"></i><span><strong>전문가 코칭</strong>${escapeHtml(result.expertTip)}</span></p>
       </div>
     </div>
     <button class="primary-button" id="opic-next-question">
@@ -3548,12 +3654,32 @@ function moveToNextOpicQuestion() {
   }
 }
 
-function getOpicRange(score) {
-  if (score >= 84) return "AL 가능성";
-  if (score >= 73) return "IH ~ AL";
-  if (score >= 61) return "IM ~ IH";
-  if (score >= 49) return "IL ~ IM";
-  return "NL ~ IL";
+function getOpicRange(score, level = opicState.level) {
+  const ranges = {
+    intermediate: [
+      [84, "IM3 ~ IH 가능성"],
+      [73, "IM2 ~ IM3"],
+      [61, "IM1 ~ IM2"],
+      [49, "IL ~ IM1"],
+      [0, "NL ~ IL"],
+    ],
+    upper: [
+      [84, "IH ~ AL 가능성"],
+      [73, "IH 근접"],
+      [61, "IM3 ~ IH"],
+      [49, "IM2 ~ IM3"],
+      [0, "IL ~ IM2"],
+    ],
+    advanced: [
+      [84, "AL 가능성"],
+      [73, "IH ~ AL"],
+      [61, "IH 근접"],
+      [49, "IM3 ~ IH"],
+      [0, "IM 이하"],
+    ],
+  }[level] || [];
+
+  return ranges.find(([minimum]) => score >= minimum)?.[1] || "NL ~ IL";
 }
 
 function finishOpicTest() {
@@ -3561,6 +3687,7 @@ function finishOpicTest() {
   clearInterval(opicState.answerTimer);
   stopOpicRecognition();
   window.speechSynthesis?.cancel();
+  const rubric = opicLevelRubrics[opicState.level] || opicLevelRubrics.intermediate;
   const answers = opicState.answers;
   const average = answers.length
     ? Math.round(answers.reduce((sum, answer) => sum + answer.total, 0) / answers.length)
@@ -3576,12 +3703,13 @@ function finishOpicTest() {
         : 0,
     ]),
   );
-  const range = getOpicRange(average);
+  const range = getOpicRange(average, opicState.level);
   const history = JSON.parse(localStorage.getItem(STORAGE.opicHistory) || "[]");
   history.unshift({
     date: localDateKey(),
     average,
     range,
+    target: rubric.label,
     answered: answers.length,
   });
   localStorage.setItem(STORAGE.opicHistory, JSON.stringify(history.slice(0, 5)));
@@ -3596,9 +3724,9 @@ function finishOpicTest() {
         <small>OVERALL</small>
       </div>
       <div>
-        <span class="section-kicker">MOCK TEST COMPLETE</span>
-        <h2>예상 연습 범위: <em>${range}</em></h2>
-        <p>${answers.length}개 답변을 바탕으로 분석했어요. 공식 등급이 아닌 학습 방향을 잡기 위한 참고 결과입니다.</p>
+        <span class="section-kicker">MOCK TEST COMPLETE · ${escapeHtml(rubric.label)}</span>
+        <h2>${escapeHtml(rubric.label)} 기준 예상 범위: <em>${escapeHtml(range)}</em></h2>
+        <p>${answers.length}개 답변을 ${rubric.targetWords}단어 목표와 ${escapeHtml(rubric.range)} 루브릭 기준으로 분석했어요. 공식 등급이 아닌 학습 방향을 잡기 위한 참고 결과입니다.</p>
       </div>
     </div>
     <div class="opic-result-metrics">
@@ -3621,9 +3749,13 @@ function finishOpicTest() {
     <div class="opic-result-summary">
       <h3>다음 연습에서 집중할 것</h3>
       <div class="result-advice-grid">
-        <article><span>01</span><strong>답변 구조</strong><p>핵심 답변 → 구체적 장면 → 느낌이나 결론의 3단계로 말하세요.</p></article>
-        <article><span>02</span><strong>시제 유지</strong><p>경험 문항은 과거, 루틴 문항은 현재 시제를 처음부터 분명히 잡으세요.</p></article>
-        <article><span>03</span><strong>연결어</strong><p>because, after that, however를 이용해 짧은 문장을 하나의 이야기로 묶으세요.</p></article>
+        ${rubric.finalAdvice
+          .map(
+            ([title, copy], index) => `
+              <article><span>${String(index + 1).padStart(2, "0")}</span><strong>${escapeHtml(title)}</strong><p>${escapeHtml(copy)}</p></article>
+            `,
+          )
+          .join("")}
       </div>
     </div>
     <div class="opic-result-actions">

@@ -3767,15 +3767,24 @@ body {
   font-size: 12px;
 }
 
+.opic-target-line {
+  margin: 5px 0 0;
+  color: #6256f5;
+  font-family: "Noto Sans KR", sans-serif;
+  font-size: 8px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
 .opic-feedback-points {
-  display: flex;
-  gap: 16px;
-  margin-top: 8px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px 14px;
+  margin-top: 10px;
 }
 
 .opic-feedback-points p {
   display: flex;
-  max-width: 310px;
   gap: 6px;
   margin: 0;
   color: #77768a;
@@ -4250,6 +4259,7 @@ body {
 
   .opic-feedback-points {
     display: grid;
+    grid-template-columns: 1fr;
   }
 
   .opic-result-hero {
