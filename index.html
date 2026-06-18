@@ -1,0 +1,903 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="매일 실제 영어 표현 5개, 실시간 영어 대화, 유튜브 쉐도잉과 OPIc 모의고사를 연습하는 영어 튜터링 앱"
+    />
+    <meta name="theme-color" content="#6256f5" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Fiveish" />
+    <title>Fiveish - 매일 5문장 영어</title>
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" href="icons/icon-192.png?v=14" type="image/png" />
+    <link rel="apple-touch-icon" href="icons/icon-192.png?v=14" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <a class="brand" href="#" aria-label="Fiveish 홈">
+          <span class="brand-mark"><img src="icons/icon-192.png?v=14" alt="" /></span>
+          <span>
+            <strong>fiveish</strong>
+            <small>real english, daily.</small>
+          </span>
+        </a>
+
+        <nav class="main-nav" aria-label="주 메뉴">
+          <button class="nav-item active" data-view="today">
+            <i data-lucide="sparkles"></i>
+            <span>오늘의 학습</span>
+          </button>
+          <button class="nav-item" data-view="business">
+            <i data-lucide="briefcase-business"></i>
+            <span>비즈니스 영어</span>
+          </button>
+          <button class="nav-item" data-view="shadowing">
+            <i data-lucide="headphones"></i>
+            <span>유튜브 쉐도잉</span>
+          </button>
+          <button class="nav-item" data-view="conversation">
+            <i data-lucide="messages-square"></i>
+            <span>실시간 영어 대화</span>
+          </button>
+          <button class="nav-item" data-view="opic">
+            <i data-lucide="badge-check"></i>
+            <span>OPIc 모의고사</span>
+          </button>
+          <button class="nav-item" data-view="saved">
+            <i data-lucide="bookmark"></i>
+            <span>저장한 표현</span>
+          </button>
+        </nav>
+
+        <div class="sidebar-bottom">
+          <div class="difficulty-card">
+            <div class="difficulty-heading">
+              <span>
+                <i data-lucide="gauge"></i>
+                학습 난이도
+              </span>
+              <strong id="difficulty-label">중급</strong>
+            </div>
+            <div class="difficulty-options" role="group" aria-label="학습 난이도 선택">
+              <button data-difficulty="beginner">초급</button>
+              <button class="active" data-difficulty="intermediate">중급</button>
+              <button data-difficulty="advanced">고급</button>
+            </div>
+          </div>
+          <div class="weekly-card">
+            <div class="weekly-card-head">
+              <span>이번 주</span>
+              <strong id="weekly-count">0/7</strong>
+            </div>
+            <div class="week-dots" id="week-dots"></div>
+            <p>짧게라도 매일 입 밖으로 말해보세요.</p>
+          </div>
+          <button class="install-app-button" id="install-app-button">
+            <span><i data-lucide="download"></i></span>
+            <span>
+              <strong>Fiveish 앱 설치</strong>
+              <small>홈 화면에서 바로 학습하기</small>
+            </span>
+            <i data-lucide="chevron-right"></i>
+          </button>
+          <button class="profile-button" aria-label="프로필">
+            <span class="avatar">H</span>
+            <span>
+              <strong>My practice</strong>
+              <small id="profile-level">Intermediate</small>
+            </span>
+            <i data-lucide="chevron-right"></i>
+          </button>
+          <p class="creator-credit">Made by <strong>@choihyukie</strong></p>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <header class="mobile-header">
+          <a class="brand" href="#">
+            <span class="brand-mark"><img src="icons/icon-192.png?v=14" alt="" /></span>
+            <strong>fiveish</strong>
+          </a>
+          <button class="icon-button" id="mobile-stats" aria-label="앱 설치">
+            <i data-lucide="download"></i>
+          </button>
+        </header>
+
+        <section class="view active" id="today-view">
+          <div class="page-heading">
+            <div>
+              <p class="eyebrow" id="today-date">TODAY</p>
+              <h1>오늘 쓸 수 있는 영어, <em>딱 5개.</em></h1>
+              <p class="heading-copy">
+                교과서보다 한 걸음 더 자연스러운 표현만 골랐어요.
+              </p>
+            </div>
+            <div class="streak-pill">
+              <span class="streak-icon"><i data-lucide="flame"></i></span>
+              <span>
+                <small>연속 학습</small>
+                <strong><span id="streak-number">1</span>일째</strong>
+              </span>
+            </div>
+          </div>
+
+          <section class="tutor-hero">
+            <div class="tutor-hero-copy">
+              <span class="tutor-badge">
+                <i data-lucide="sparkles"></i>
+                AI SPEAKING ROUTINE
+              </span>
+              <h2>오늘의 표현을<br /><strong>입으로 익혀보세요.</strong></h2>
+              <p>듣고, 따라 말하고, 실제 대화에서 바로 꺼낼 수 있게 연습합니다.</p>
+              <button class="tutor-start-button" id="start-speaking">
+                <i data-lucide="mic"></i>
+                오늘의 스피킹 시작
+              </button>
+            </div>
+            <div class="tutor-orb" aria-hidden="true">
+              <span class="sound-ring ring-one"></span>
+              <span class="sound-ring ring-two"></span>
+              <span class="mic-core"><i data-lucide="mic"></i></span>
+              <small>5분 루틴</small>
+            </div>
+          </section>
+
+          <div class="progress-overview">
+            <div class="progress-copy">
+              <span class="section-kicker">TODAY'S PROGRESS</span>
+              <strong><span id="completed-count">0</span> / 5 완료</strong>
+              <p id="progress-message">첫 표현부터 가볍게 시작해볼까요?</p>
+            </div>
+            <div class="progress-track" aria-label="오늘의 학습 진도">
+              <span id="progress-bar"></span>
+            </div>
+            <button class="quiet-button" id="reset-progress">
+              <i data-lucide="rotate-ccw"></i>
+              오늘 진도 초기화
+            </button>
+          </div>
+
+          <div class="lesson-layout">
+            <aside class="lesson-list-panel">
+              <div class="panel-title-row">
+                <div>
+                  <span class="section-kicker">DAILY FIVE</span>
+                  <h2>오늘의 표현</h2>
+                </div>
+                <span class="level-badge">실전 회화</span>
+              </div>
+              <div class="lesson-list" id="lesson-list"></div>
+              <div class="daily-note">
+                <i data-lucide="info"></i>
+                <p>목록은 날짜를 기준으로 매일 자정에 새로 바뀝니다.</p>
+              </div>
+            </aside>
+
+            <article class="lesson-card" id="lesson-card">
+              <div class="lesson-card-top">
+                <div class="phrase-meta">
+                  <span id="phrase-category">EVERYDAY</span>
+                  <span class="dot"></span>
+                  <span id="phrase-tone">CASUAL</span>
+                </div>
+                <button class="icon-button bookmark-button" id="bookmark-button" aria-label="표현 저장">
+                  <i data-lucide="bookmark"></i>
+                </button>
+              </div>
+
+              <div class="phrase-heading">
+                <p class="lesson-number" id="lesson-number">EXPRESSION 01</p>
+                <h2 id="phrase-text">I'm down.</h2>
+                <p class="pronunciation" id="phrase-pronunciation">아임 다운</p>
+                <button class="listen-button" id="listen-button">
+                  <i data-lucide="volume-2"></i>
+                  원어민 발음 듣기
+                </button>
+              </div>
+
+              <div class="meaning-block">
+                <span>이런 뜻이에요</span>
+                <h3 id="phrase-meaning">좋아, 나도 할래.</h3>
+                <p id="phrase-nuance"></p>
+              </div>
+
+              <div class="conversation-block">
+                <div class="block-heading">
+                  <i data-lucide="messages-square"></i>
+                  <span>실제 대화에서는</span>
+                </div>
+                <div class="chat">
+                  <div class="chat-avatar">A</div>
+                  <div>
+                    <span>A</span>
+                    <p id="example-a"></p>
+                  </div>
+                </div>
+                <div class="chat reply">
+                  <div class="chat-avatar">B</div>
+                  <div>
+                    <span>B</span>
+                    <p id="example-b"></p>
+                    <small id="example-translation"></small>
+                  </div>
+                </div>
+              </div>
+
+              <div class="variation-block">
+                <span>같이 알아두면 좋아요</span>
+                <div class="variation-chips" id="variation-chips"></div>
+              </div>
+
+              <div class="lesson-actions">
+                <button class="secondary-button" id="prev-lesson">
+                  <i data-lucide="arrow-left"></i>
+                  이전
+                </button>
+                <button class="primary-button" id="complete-lesson">
+                  이해했어요
+                  <i data-lucide="check"></i>
+                </button>
+                <button class="secondary-button next-button" id="next-lesson">
+                  다음
+                  <i data-lucide="arrow-right"></i>
+                </button>
+              </div>
+            </article>
+          </div>
+
+          <section class="quiz-card" id="quiz-card">
+            <div class="quiz-intro">
+              <span class="quiz-icon"><i data-lucide="pencil-line"></i></span>
+              <div>
+                <span class="section-kicker">QUICK CHECK</span>
+                <h2>방금 표현, 바로 써볼까요?</h2>
+                <p>빈칸에 가장 자연스러운 표현을 골라보세요.</p>
+              </div>
+            </div>
+            <div class="quiz-content">
+              <p class="quiz-situation" id="quiz-situation"></p>
+              <div class="quiz-sentence" id="quiz-sentence"></div>
+              <div class="quiz-options" id="quiz-options"></div>
+              <div class="quiz-feedback" id="quiz-feedback" aria-live="polite"></div>
+            </div>
+          </section>
+        </section>
+
+        <section class="view" id="business-view">
+          <div class="page-heading business-heading">
+            <div>
+              <p class="eyebrow">BUSINESS ENGLISH · DAILY FIVE</p>
+              <h1>일할 때 바로 쓰는 <em>영어 5개.</em></h1>
+              <p class="heading-copy">
+                회의, 이메일, 협업에서 실제로 반복되는 표현을 상황과 함께 익혀요.
+              </p>
+            </div>
+            <div class="business-progress-pill">
+              <span><i data-lucide="briefcase-business"></i></span>
+              <div>
+                <small>오늘의 비즈니스 진도</small>
+                <strong><b id="business-completed-count">0</b> / 5</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="business-context-note">
+            <i data-lucide="message-circle-warning"></i>
+            <p>
+              직역보다 <strong>언제, 누구에게 쓰는지</strong>가 중요해요.
+              각 표현에 격식 수준과 실제 업무 상황을 함께 표시했습니다.
+            </p>
+          </div>
+
+          <div class="lesson-layout business-layout">
+            <aside class="lesson-list-panel business-list-panel">
+              <div class="panel-title-row">
+                <div>
+                  <span class="section-kicker">WORKPLACE FIVE</span>
+                  <h2>오늘의 업무 표현</h2>
+                </div>
+                <span class="level-badge">실무 영어</span>
+              </div>
+              <div class="lesson-list" id="business-lesson-list"></div>
+              <div class="daily-note">
+                <i data-lucide="calendar-check"></i>
+                <p>업무 표현도 날짜에 따라 매일 5개씩 새로 추천됩니다.</p>
+              </div>
+            </aside>
+
+            <article class="lesson-card business-lesson-card" id="business-lesson-card">
+              <div class="lesson-card-top">
+                <div class="phrase-meta">
+                  <span id="business-phrase-category">MEETINGS</span>
+                  <span class="dot"></span>
+                  <span id="business-phrase-tone">PROFESSIONAL</span>
+                </div>
+                <button
+                  class="icon-button bookmark-button"
+                  id="business-bookmark-button"
+                  aria-label="비즈니스 표현 저장"
+                >
+                  <i data-lucide="bookmark"></i>
+                </button>
+              </div>
+
+              <div class="phrase-heading">
+                <p class="lesson-number" id="business-lesson-number">BUSINESS 01</p>
+                <h2 id="business-phrase-text">Let's circle back.</h2>
+                <p class="pronunciation" id="business-phrase-pronunciation"></p>
+                <button class="listen-button" id="business-listen-button">
+                  <i data-lucide="volume-2"></i>
+                  발음 듣기
+                </button>
+              </div>
+
+              <div class="meaning-block">
+                <span>업무에서는 이런 뜻이에요</span>
+                <h3 id="business-phrase-meaning"></h3>
+                <p id="business-phrase-nuance"></p>
+              </div>
+
+              <div class="conversation-block business-dialogue">
+                <div class="block-heading">
+                  <i data-lucide="presentation"></i>
+                  <span>실제 업무 상황</span>
+                </div>
+                <div class="chat">
+                  <div class="chat-avatar">A</div>
+                  <div>
+                    <span>COLLEAGUE</span>
+                    <p id="business-example-a"></p>
+                  </div>
+                </div>
+                <div class="chat reply">
+                  <div class="chat-avatar">B</div>
+                  <div>
+                    <span>YOU</span>
+                    <p id="business-example-b"></p>
+                    <small id="business-example-translation"></small>
+                  </div>
+                </div>
+              </div>
+
+              <div class="variation-block">
+                <span>같은 상황에서 바꿔 쓸 수 있어요</span>
+                <div class="variation-chips" id="business-variation-chips"></div>
+              </div>
+
+              <div class="business-quiz">
+                <span class="section-kicker">WORK CHECK</span>
+                <p id="business-quiz-situation"></p>
+                <div class="quiz-sentence" id="business-quiz-sentence"></div>
+                <div class="quiz-options" id="business-quiz-options"></div>
+                <div class="quiz-feedback" id="business-quiz-feedback" aria-live="polite"></div>
+              </div>
+
+              <div class="lesson-actions">
+                <button class="secondary-button" id="business-prev-lesson">
+                  <i data-lucide="arrow-left"></i>
+                  이전
+                </button>
+                <button class="primary-button" id="business-complete-lesson">
+                  학습 완료
+                  <i data-lucide="check"></i>
+                </button>
+                <button class="secondary-button next-button" id="business-next-lesson">
+                  다음
+                  <i data-lucide="arrow-right"></i>
+                </button>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="view" id="shadowing-view">
+          <div class="page-heading shadowing-heading">
+            <div>
+              <p class="eyebrow">YOUTUBE SHADOWING</p>
+              <h1>듣고, 멈추고, <em>그대로 말하기.</em></h1>
+              <p class="heading-copy">
+                좋아하는 영상의 URL과 스크립트만 넣으면 나만의 쉐도잉 레슨이 됩니다.
+              </p>
+            </div>
+            <button class="primary-button" id="open-script-editor">
+              <i data-lucide="file-pen-line"></i>
+              스크립트 편집
+            </button>
+          </div>
+
+          <div class="video-loader">
+            <div class="input-wrap">
+              <i data-lucide="youtube"></i>
+              <input
+                id="youtube-url"
+                type="url"
+                value="https://www.youtube.com/watch?v=eIho2S0ZahI"
+                placeholder="YouTube URL을 붙여넣으세요"
+                aria-label="유튜브 URL"
+              />
+            </div>
+            <button class="dark-button" id="load-video">영상 불러오기</button>
+          </div>
+
+          <div class="shadowing-layout">
+            <section class="video-panel">
+              <div class="video-frame">
+                <div id="youtube-player"></div>
+                <div class="video-placeholder" id="video-placeholder">
+                  <span><i data-lucide="play"></i></span>
+                  <strong>영상을 준비하고 있어요</strong>
+                </div>
+              </div>
+              <div class="video-info">
+                <div>
+                  <span class="section-kicker">CURRENT LESSON</span>
+                  <h2 id="video-title">How to speak so that people want to listen</h2>
+                  <p>Julian Treasure · TED</p>
+                </div>
+                <button class="icon-button" id="open-youtube" aria-label="유튜브에서 열기">
+                  <i data-lucide="external-link"></i>
+                </button>
+              </div>
+
+              <div class="player-controls">
+                <button class="control-button" id="back-five" aria-label="5초 전">
+                  <i data-lucide="rotate-ccw"></i>
+                  <small>5</small>
+                </button>
+                <button class="play-button" id="toggle-play" aria-label="재생">
+                  <i data-lucide="play"></i>
+                </button>
+                <button class="control-button" id="forward-five" aria-label="5초 후">
+                  <i data-lucide="rotate-cw"></i>
+                  <small>5</small>
+                </button>
+                <div class="speed-control">
+                  <span>재생 속도</span>
+                  <div class="speed-buttons" id="speed-buttons">
+                    <button data-speed="0.75">0.75×</button>
+                    <button class="active" data-speed="1">1×</button>
+                    <button data-speed="1.25">1.25×</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="shadow-tip">
+                <span><i data-lucide="mic-2"></i></span>
+                <div>
+                  <strong>3단계 쉐도잉</strong>
+                  <p>자막과 함께 듣기 → 한 문장씩 따라 하기 → 자막 없이 다시 말하기</p>
+                </div>
+              </div>
+            </section>
+
+            <aside class="transcript-panel">
+              <div class="transcript-header">
+                <div>
+                  <span class="section-kicker">TIMED SCRIPT</span>
+                  <h2>스크립트</h2>
+                </div>
+                <button class="loop-toggle" id="loop-toggle" aria-pressed="false">
+                  <i data-lucide="repeat-2"></i>
+                  문장 반복
+                </button>
+              </div>
+              <div class="transcript-help">
+                <i data-lucide="mouse-pointer-click"></i>
+                문장을 누르면 해당 구간부터 재생돼요.
+              </div>
+              <div class="transcript-list" id="transcript-list"></div>
+            </aside>
+          </div>
+        </section>
+
+        <section class="view" id="conversation-view">
+          <div class="page-heading conversation-heading">
+            <div>
+              <p class="eyebrow">LIVE CONVERSATION</p>
+              <h1>머뭇거려도 괜찮아요. <em>계속 말해보기.</em></h1>
+              <p class="heading-copy">
+                상황을 고르고 영어로 답하면 튜터가 대화를 이어가며 바로 코칭해요.
+              </p>
+            </div>
+            <div class="live-status-pill">
+              <span></span>
+              <div>
+                <small>VOICE TUTOR</small>
+                <strong>준비됨</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="conversation-practice-layout">
+            <aside class="scenario-panel">
+              <div class="panel-title-row">
+                <div>
+                  <span class="section-kicker">CHOOSE A SCENE</span>
+                  <h2>오늘의 대화 상황</h2>
+                </div>
+              </div>
+              <div class="scenario-list" id="conversation-scenarios">
+                <button class="scenario-button active" data-conversation-scenario="smalltalk">
+                  <span class="scenario-icon"><i data-lucide="coffee"></i></span>
+                  <span>
+                    <strong>처음 만난 사람과 스몰토크</strong>
+                    <small>취미 · 주말 · 공통점 찾기</small>
+                  </span>
+                  <i data-lucide="chevron-right"></i>
+                </button>
+                <button class="scenario-button" data-conversation-scenario="cafe">
+                  <span class="scenario-icon"><i data-lucide="cup-soda"></i></span>
+                  <span>
+                    <strong>카페에서 주문하기</strong>
+                    <small>주문 · 변경 · 추천 요청</small>
+                  </span>
+                  <i data-lucide="chevron-right"></i>
+                </button>
+                <button class="scenario-button" data-conversation-scenario="travel">
+                  <span class="scenario-icon"><i data-lucide="luggage"></i></span>
+                  <span>
+                    <strong>여행 중 문제 해결</strong>
+                    <small>호텔 · 일정 · 도움 요청</small>
+                  </span>
+                  <i data-lucide="chevron-right"></i>
+                </button>
+                <button class="scenario-button" data-conversation-scenario="work">
+                  <span class="scenario-icon"><i data-lucide="presentation"></i></span>
+                  <span>
+                    <strong>동료와 업무 조율</strong>
+                    <small>일정 · 의견 · 후속 조치</small>
+                  </span>
+                  <i data-lucide="chevron-right"></i>
+                </button>
+              </div>
+              <div class="conversation-goal-card">
+                <span><i data-lucide="target"></i></span>
+                <div>
+                  <small>이번 대화의 목표 표현</small>
+                  <strong id="conversation-target">Not gonna lie, ...</strong>
+                  <p id="conversation-target-tip">솔직한 의견을 자연스럽게 꺼내보세요.</p>
+                </div>
+              </div>
+            </aside>
+
+            <section class="live-conversation-card">
+              <div class="live-tutor-header">
+                <div class="tutor-profile">
+                  <span class="tutor-avatar">M</span>
+                  <div>
+                    <strong>Mia</strong>
+                    <small><i></i> English conversation tutor</small>
+                  </div>
+                </div>
+                <button class="quiet-button" id="reset-conversation">
+                  <i data-lucide="rotate-ccw"></i>
+                  새 대화
+                </button>
+              </div>
+
+              <div class="live-chat-log" id="live-chat-log" aria-live="polite"></div>
+
+              <div class="turn-coaching" id="turn-coaching">
+                <div class="coaching-empty">
+                  <span><i data-lucide="sparkles"></i></span>
+                  <p>영어로 답하면 자연스러움, 길이, 이어 말하기를 바로 확인해 드려요.</p>
+                </div>
+              </div>
+
+              <div class="conversation-composer">
+                <button class="voice-record-button" id="conversation-mic" aria-label="음성으로 답하기">
+                  <i data-lucide="mic"></i>
+                </button>
+                <div class="conversation-input-wrap">
+                  <textarea
+                    id="conversation-input"
+                    rows="2"
+                    placeholder="영어로 말하거나 여기에 입력하세요..."
+                    aria-label="영어 대화 답변"
+                  ></textarea>
+                  <small id="conversation-mic-status">마이크를 누르면 말한 내용이 입력돼요.</small>
+                </div>
+                <button class="send-conversation-button" id="send-conversation" aria-label="답변 보내기">
+                  <i data-lucide="send"></i>
+                </button>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <section class="view" id="opic-view">
+          <div class="page-heading opic-heading">
+            <div>
+              <p class="eyebrow">OPIc MOCK TEST</p>
+              <h1>실전 흐름 그대로, <em>끝까지 말하기.</em></h1>
+              <p class="heading-copy">
+                배경 설문부터 12문항 답변, 문항별 코칭과 종합 예상 범위까지 한 번에 연습해요.
+              </p>
+            </div>
+            <div class="opic-format-pill">
+              <span><i data-lucide="timer"></i></span>
+              <div>
+                <small>실전 기준</small>
+                <strong>40분 · 12~15문항</strong>
+              </div>
+            </div>
+          </div>
+
+          <section class="opic-setup-card" id="opic-setup">
+            <div class="opic-setup-intro">
+              <span class="opic-avatar">A</span>
+              <div>
+                <span class="section-kicker">MEET YOUR INTERVIEWER</span>
+                <h2>Hi, I'm Ava. Let's set up your test.</h2>
+                <p>
+                  실제 OPIc처럼 선택한 배경과 자기평가에 맞춰 질문이 구성됩니다.
+                  이 모의고사는 연습용이며 공식 OPIc 성적을 산출하지 않습니다.
+                </p>
+              </div>
+            </div>
+
+            <div class="opic-setup-grid">
+              <div class="opic-survey-block">
+                <div class="setup-block-heading">
+                  <span>1</span>
+                  <div>
+                    <h3>Background Survey</h3>
+                    <p>경험이 있는 주제를 3개 이상 선택하세요.</p>
+                  </div>
+                </div>
+                <div class="opic-topic-grid" id="opic-topics">
+                  <label><input type="checkbox" value="home" checked /><span><i data-lucide="house"></i>집과 동네</span></label>
+                  <label><input type="checkbox" value="movies" checked /><span><i data-lucide="clapperboard"></i>영화</span></label>
+                  <label><input type="checkbox" value="music" checked /><span><i data-lucide="music-2"></i>음악</span></label>
+                  <label><input type="checkbox" value="travel" /><span><i data-lucide="plane"></i>여행</span></label>
+                  <label><input type="checkbox" value="cafes" /><span><i data-lucide="coffee"></i>카페</span></label>
+                  <label><input type="checkbox" value="exercise" /><span><i data-lucide="dumbbell"></i>운동</span></label>
+                  <label><input type="checkbox" value="work" /><span><i data-lucide="briefcase-business"></i>직장</span></label>
+                  <label><input type="checkbox" value="technology" /><span><i data-lucide="smartphone"></i>기술</span></label>
+                </div>
+              </div>
+
+              <div class="opic-level-block">
+                <div class="setup-block-heading">
+                  <span>2</span>
+                  <div>
+                    <h3>Self-Assessment</h3>
+                    <p>현재 말하기에 가장 가까운 수준을 고르세요.</p>
+                  </div>
+                </div>
+                <div class="opic-level-options">
+                  <label>
+                    <input type="radio" name="opic-level" value="intermediate" checked />
+                    <span><strong>Intermediate</strong><small>익숙한 주제에서 문장을 이어 말할 수 있어요.</small></span>
+                  </label>
+                  <label>
+                    <input type="radio" name="opic-level" value="upper" />
+                    <span><strong>Upper Intermediate</strong><small>경험을 자세히 설명하고 문제를 해결할 수 있어요.</small></span>
+                  </label>
+                  <label>
+                    <input type="radio" name="opic-level" value="advanced" />
+                    <span><strong>Advanced</strong><small>예상 밖 상황과 사회적 주제도 논리적으로 말할 수 있어요.</small></span>
+                  </label>
+                </div>
+                <label class="opic-coaching-toggle">
+                  <input type="checkbox" id="opic-coaching-mode" checked />
+                  <span>
+                    <strong>문항별 코칭 켜기</strong>
+                    <small>각 답변 뒤 피드백을 보고 다음 문항으로 이동합니다.</small>
+                  </span>
+                </label>
+              </div>
+            </div>
+
+            <div class="opic-start-row">
+              <div>
+                <i data-lucide="shield-check"></i>
+                <p>답변은 이 기기 안에서만 분석되며 외부로 전송되지 않습니다.</p>
+              </div>
+              <button class="primary-button opic-start-button" id="start-opic-test">
+                모의고사 시작
+                <i data-lucide="arrow-right"></i>
+              </button>
+            </div>
+          </section>
+
+          <section class="opic-test-shell hidden" id="opic-test">
+            <div class="opic-test-topbar">
+              <div class="opic-question-count">
+                <small>QUESTION</small>
+                <strong><span id="opic-question-number">1</span> / <span id="opic-question-total">12</span></strong>
+              </div>
+              <div class="opic-progress-track"><span id="opic-progress-bar"></span></div>
+              <div class="opic-timer" id="opic-timer">
+                <i data-lucide="timer"></i>
+                <strong>40:00</strong>
+              </div>
+              <button class="opic-exit-button" id="exit-opic-test">
+                <i data-lucide="x"></i>
+                시험 종료
+              </button>
+            </div>
+
+            <div class="opic-exam-layout">
+              <article class="opic-prompt-card">
+                <div class="ava-stage">
+                  <span class="ava-ring"></span>
+                  <span class="opic-avatar large">A</span>
+                  <small>AVA · INTERVIEWER</small>
+                </div>
+                <div class="opic-prompt-copy">
+                  <span class="section-kicker" id="opic-question-type">WARM-UP</span>
+                  <h2 id="opic-question-text"></h2>
+                  <button class="listen-button" id="replay-opic-question">
+                    <i data-lucide="volume-2"></i>
+                    질문 듣기 <span id="opic-replay-count">0/2</span>
+                  </button>
+                  <button class="opic-hint-toggle" id="opic-hint-toggle">
+                    <i data-lucide="lightbulb"></i>
+                    답변 구조 힌트
+                  </button>
+                  <div class="opic-hint hidden" id="opic-hint"></div>
+                </div>
+              </article>
+
+              <aside class="opic-answer-card">
+                <div class="opic-answer-heading">
+                  <div>
+                    <span class="section-kicker">YOUR RESPONSE</span>
+                    <h3>영어로 답변하세요</h3>
+                  </div>
+                  <span class="answer-word-count"><b id="opic-word-count">0</b> words</span>
+                </div>
+                <textarea
+                  id="opic-answer"
+                  rows="9"
+                  placeholder="마이크를 누르고 답변하세요. 음성 인식이 어려우면 직접 입력해도 됩니다."
+                  aria-label="OPIc 답변"
+                ></textarea>
+                <div class="opic-recording-row">
+                  <button class="opic-record-button" id="opic-record-button">
+                    <i data-lucide="mic"></i>
+                    <span>답변 녹음 시작</span>
+                  </button>
+                  <small id="opic-record-status">답변 시간 <b>00:00</b></small>
+                </div>
+                <button class="primary-button opic-submit-answer" id="opic-submit-answer">
+                  답변 제출
+                  <i data-lucide="arrow-right"></i>
+                </button>
+              </aside>
+            </div>
+
+            <div class="opic-question-feedback hidden" id="opic-question-feedback"></div>
+          </section>
+
+          <section class="opic-result-card hidden" id="opic-result"></section>
+        </section>
+
+        <section class="view" id="saved-view">
+          <div class="page-heading">
+            <div>
+              <p class="eyebrow">MY COLLECTION</p>
+              <h1>다시 보고 싶은 <em>표현들.</em></h1>
+              <p class="heading-copy">북마크한 표현을 모아서 반복 학습하세요.</p>
+            </div>
+          </div>
+          <div class="saved-grid" id="saved-grid"></div>
+          <div class="empty-state" id="saved-empty">
+            <span><i data-lucide="bookmark-plus"></i></span>
+            <h2>아직 저장한 표현이 없어요</h2>
+            <p>오늘의 표현에서 북마크 버튼을 누르면 여기에 차곡차곡 모입니다.</p>
+            <button class="primary-button" data-go-today>오늘의 표현 보기</button>
+          </div>
+        </section>
+
+        <footer class="mobile-creator-credit">
+          Made by <strong>@choihyukie</strong>
+        </footer>
+      </main>
+
+      <nav class="mobile-nav" aria-label="모바일 메뉴">
+        <button class="active" data-view="today">
+          <i data-lucide="sparkles"></i>
+          <span>오늘</span>
+        </button>
+        <button data-view="business">
+          <i data-lucide="briefcase-business"></i>
+          <span>비즈니스</span>
+        </button>
+        <button data-view="shadowing">
+          <i data-lucide="headphones"></i>
+          <span>쉐도잉</span>
+        </button>
+        <button data-view="conversation">
+          <i data-lucide="messages-square"></i>
+          <span>대화</span>
+        </button>
+        <button data-view="opic">
+          <i data-lucide="badge-check"></i>
+          <span>OPIc</span>
+        </button>
+        <button data-view="saved">
+          <i data-lucide="bookmark"></i>
+          <span>저장</span>
+        </button>
+      </nav>
+    </div>
+
+    <div class="modal-backdrop" id="script-modal" aria-hidden="true">
+      <div class="script-modal-card" role="dialog" aria-modal="true" aria-labelledby="script-modal-title">
+        <div class="modal-header">
+          <div>
+            <span class="section-kicker">CUSTOM SCRIPT</span>
+            <h2 id="script-modal-title">타임코드 스크립트 편집</h2>
+          </div>
+          <button class="icon-button" id="close-script-editor" aria-label="닫기">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+        <p class="modal-description">
+          한 줄에 한 문장씩 입력하세요. <code>[분:초] 영어 문장 | 한국어 뜻</code> 형식을 사용합니다.
+        </p>
+        <textarea id="script-editor" spellcheck="false"></textarea>
+        <div class="format-example">
+          <span>예시</span>
+          <code>[00:12] Let me walk you through it. | 제가 차근차근 설명해 드릴게요.</code>
+        </div>
+        <div class="modal-actions">
+          <button class="secondary-button" id="restore-script">샘플 복원</button>
+          <button class="primary-button" id="save-script">
+            <i data-lucide="check"></i>
+            적용하기
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-backdrop" id="install-modal" aria-hidden="true">
+      <div class="script-modal-card install-modal-card" role="dialog" aria-modal="true" aria-labelledby="install-modal-title">
+        <div class="modal-header">
+          <div>
+            <span class="section-kicker">INSTALL FIVEISH</span>
+            <h2 id="install-modal-title">앱으로 설치하기</h2>
+          </div>
+          <button class="icon-button" id="close-install-modal" aria-label="닫기">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+        <div class="install-app-preview">
+          <span class="install-icon"><img src="icons/icon-192.png?v=14" alt="" /></span>
+          <div>
+            <strong>Fiveish</strong>
+            <small>Real English, daily.</small>
+          </div>
+        </div>
+        <div class="install-instructions" id="install-instructions"></div>
+        <button class="primary-button install-confirm-button" id="install-confirm-button">
+          <i data-lucide="download"></i>
+          이 기기에 설치
+        </button>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite">
+      <i data-lucide="check-circle-2"></i>
+      <span></span>
+    </div>
+
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
