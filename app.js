@@ -1608,6 +1608,82 @@ const defaultTranscript = `[00:00] Your voice is a tool you use every day. | 목
 [05:06] Practice makes your delivery feel natural. | 연습은 말하기를 자연스럽게 만듭니다.
 [05:33] Speak so your listener feels included. | 듣는 사람이 함께한다고 느끼도록 말하세요.`;
 
+const shadowingLessonPool = [
+  {
+    id: "speak-listen",
+    videoId: "eIho2S0ZahI",
+    title: "How to Speak So That People Want to Listen",
+    source: "Julian Treasure · TED",
+    transcript: defaultTranscript,
+  },
+  {
+    id: "stanford-commencement",
+    videoId: "UF8uR6Z6KLc",
+    title: "Steve Jobs' 2005 Stanford Commencement Address",
+    source: "Steve Jobs · Stanford",
+    transcript: `[00:00] Today, I want to tell you three stories from my life. | 오늘은 제 삶의 세 가지 이야기를 들려드리려 합니다.
+[00:28] You cannot connect the dots looking forward. | 앞을 보면서 점들을 연결할 수는 없습니다.
+[01:02] You can only connect them looking backward. | 뒤돌아볼 때에야 점들이 이어졌음을 알 수 있습니다.
+[01:36] Trust that the dots will somehow connect in your future. | 그 점들이 언젠가 미래에 이어질 것이라 믿으세요.
+[02:10] Sometimes life hits you in the head with a brick. | 때로 삶은 예상치 못한 방식으로 당신을 흔듭니다.
+[02:44] Do not lose faith in what you love. | 사랑하는 일에 대한 믿음을 잃지 마세요.
+[03:18] Your time is limited, so do not live someone else's life. | 시간은 한정되어 있으니 타인의 삶을 살지 마세요.
+[03:52] Have the courage to follow your heart and intuition. | 마음과 직관을 따를 용기를 가지세요.`,
+  },
+  {
+    id: "body-language",
+    videoId: "Ks-_Mh1QhMc",
+    title: "Your Body Language May Shape Who You Are",
+    source: "Amy Cuddy · TED",
+    transcript: `[00:00] Our bodies can change how we feel about ourselves. | 몸의 자세는 자신을 느끼는 방식에 영향을 줄 수 있습니다.
+[00:24] Small changes in posture can shift your confidence. | 자세의 작은 변화가 자신감을 바꿀 수 있습니다.
+[00:49] Before a stressful moment, give yourself space. | 긴장되는 순간 전에는 스스로에게 여유를 주세요.
+[01:18] Breathe, stand tall, and let your body support your voice. | 숨을 쉬고 바르게 서서 몸이 목소리를 받쳐주게 하세요.
+[01:49] Confidence often starts before the first word. | 자신감은 첫 단어를 말하기 전부터 시작됩니다.
+[02:21] Practice the feeling before you need the performance. | 실전 전에 그 감각을 미리 연습하세요.
+[02:54] You are not pretending; you are preparing. | 흉내 내는 것이 아니라 준비하는 것입니다.`,
+  },
+  {
+    id: "procrastination",
+    videoId: "arj7oStGLkU",
+    title: "Inside the Mind of a Master Procrastinator",
+    source: "Tim Urban · TED",
+    transcript: `[00:00] Procrastination feels funny until the deadline gets close. | 미루기는 마감이 다가오기 전까지는 우스워 보입니다.
+[00:31] The problem is not knowing what to do. | 문제는 무엇을 해야 하는지 모르는 것이 아닙니다.
+[01:02] The problem is getting yourself to start. | 문제는 스스로 시작하게 만드는 것입니다.
+[01:35] A deadline can wake up your focus very quickly. | 마감은 집중력을 빠르게 깨울 수 있습니다.
+[02:08] But important goals do not always come with deadlines. | 하지만 중요한 목표에는 항상 마감이 있지는 않습니다.
+[02:39] That is why small daily action matters. | 그래서 매일의 작은 행동이 중요합니다.
+[03:12] Start before it feels urgent. | 급해지기 전에 시작하세요.`,
+  },
+  {
+    id: "twenty-hours",
+    videoId: "5MgBikgcWnY",
+    title: "The First 20 Hours: How to Learn Anything",
+    source: "Josh Kaufman · TEDx",
+    transcript: `[00:00] You can get better at a skill faster than you think. | 생각보다 빠르게 새로운 기술을 늘릴 수 있습니다.
+[00:27] The first step is to decide exactly what you want to do. | 첫 단계는 무엇을 하고 싶은지 정확히 정하는 것입니다.
+[00:58] Break the skill into small pieces. | 기술을 작은 조각으로 나누세요.
+[01:29] Practice the most useful parts first. | 가장 쓸모 있는 부분부터 연습하세요.
+[02:00] Remove distractions before you begin. | 시작하기 전에 방해 요소를 치우세요.
+[02:31] Give yourself enough time to feel the improvement. | 변화를 느낄 만큼의 시간을 스스로에게 주세요.
+[03:02] Twenty focused hours can change your confidence. | 집중한 20시간은 자신감을 바꿀 수 있습니다.`,
+  },
+  {
+    id: "creativity-school",
+    videoId: "iG9CE55wbtY",
+    title: "Do Schools Kill Creativity?",
+    source: "Sir Ken Robinson · TED",
+    transcript: `[00:00] Creativity grows when people are not afraid to try. | 창의성은 시도하는 것을 두려워하지 않을 때 자랍니다.
+[00:30] Children often take chances because they are not scared of mistakes. | 아이들은 실수를 두려워하지 않기 때문에 도전합니다.
+[01:01] Being wrong is not the same as being creative. | 틀리는 것 자체가 창의성은 아닙니다.
+[01:32] But if you cannot risk being wrong, you cannot create something new. | 하지만 틀릴 위험을 감수하지 않으면 새로운 것을 만들 수 없습니다.
+[02:05] Learning should leave room for curiosity. | 배움에는 호기심이 들어갈 공간이 필요합니다.
+[02:38] We should value different kinds of intelligence. | 다양한 지능과 재능을 존중해야 합니다.
+[03:10] The goal is to help people find what they can become. | 목표는 사람들이 될 수 있는 모습을 찾도록 돕는 것입니다.`,
+  },
+];
+
 const conversationScenarios = {
   smalltalk: {
     target: "Not gonna lie, ...",
@@ -1820,6 +1896,8 @@ const STORAGE = {
   saved: "fiveish-saved",
   studyDates: "fiveish-study-dates",
   transcript: "fiveish-transcript",
+  shadowingDate: "fiveish-shadowing-date",
+  shadowingCustom: "fiveish-shadowing-custom",
   difficulty: "fiveish-difficulty",
   opicHistory: "fiveish-opic-history",
 };
@@ -1836,6 +1914,7 @@ const state = {
   activeTranscriptIndex: -1,
   loopActive: false,
   playerReady: false,
+  shadowingLesson: null,
   currentVideoId: "eIho2S0ZahI",
 };
 
@@ -1944,6 +2023,50 @@ function getDailyBusinessExpressions(dateKey = state.todayKey) {
   return seededShuffle(pool, dateSeed(dateKey) + 2026).slice(0, 5);
 }
 
+function getDailyShadowingLesson(dateKey = state.todayKey) {
+  return shadowingLessonPool[dayNumber(dateKey) % shadowingLessonPool.length];
+}
+
+function getShadowingVideoUrl(videoId) {
+  return `https://www.youtube.com/watch?v=${videoId}`;
+}
+
+function syncDailyShadowingLesson(dateKey = state.todayKey) {
+  const lesson = getDailyShadowingLesson(dateKey);
+  const storedDate = localStorage.getItem(STORAGE.shadowingDate);
+  const keepTodayCustomScript =
+    storedDate === dateKey && localStorage.getItem(STORAGE.shadowingCustom) === "true";
+
+  state.shadowingLesson = lesson;
+  state.currentVideoId = lesson.videoId;
+  state.activeTranscriptIndex = -1;
+
+  if (!keepTodayCustomScript) {
+    state.transcriptRaw = lesson.transcript;
+    localStorage.setItem(STORAGE.transcript, state.transcriptRaw);
+    localStorage.setItem(STORAGE.shadowingDate, dateKey);
+    localStorage.setItem(STORAGE.shadowingCustom, "false");
+  }
+
+  const input = document.querySelector("#youtube-url");
+  const title = document.querySelector("#video-title");
+  const source = document.querySelector("#video-source");
+  if (input) input.value = getShadowingVideoUrl(lesson.videoId);
+  if (title) title.textContent = lesson.title;
+  if (source) {
+    source.textContent = keepTodayCustomScript
+      ? `${lesson.source} · 직접 편집한 스크립트`
+      : `${lesson.source} · 오늘의 추천`;
+  }
+
+  if (state.playerReady && player) {
+    player.cueVideoById(lesson.videoId);
+    document.querySelector("#video-placeholder")?.classList.add("hidden");
+  }
+
+  return lesson;
+}
+
 function getProgressStore() {
   return JSON.parse(localStorage.getItem(STORAGE.progress) || "{}");
 }
@@ -1996,10 +2119,12 @@ function refreshDailyContent({ announce = false } = {}) {
   businessState.dailyExpressions = getDailyBusinessExpressions(currentKey);
   loadTodayProgress(currentKey);
   loadBusinessProgress(currentKey);
+  syncDailyShadowingLesson(currentKey);
 
   setDateHeading(currentKey);
   renderCurrentLesson();
   renderBusinessLesson();
+  renderTranscript();
   renderProgress();
   renderStreak();
   renderWeek();
@@ -2798,6 +2923,8 @@ function loadVideoFromInput() {
     createYouTubePlayer();
   }
   document.querySelector("#video-title").textContent = "나의 YouTube 쉐도잉 영상";
+  document.querySelector("#video-source").textContent = "직접 선택한 영상 · YouTube";
+  localStorage.setItem(STORAGE.shadowingDate, state.todayKey);
   state.activeTranscriptIndex = -1;
   updateActiveTranscript(-1, false);
   showToast("영상을 불러왔어요. 스크립트를 맞춰보세요.");
@@ -2878,7 +3005,7 @@ function setupScriptEditor() {
   });
 
   document.querySelector("#restore-script").addEventListener("click", () => {
-    editor.value = defaultTranscript;
+    editor.value = getDailyShadowingLesson(state.todayKey).transcript;
   });
 
   document.querySelector("#save-script").addEventListener("click", () => {
@@ -2889,6 +3016,8 @@ function setupScriptEditor() {
     }
     state.transcriptRaw = editor.value.trim();
     localStorage.setItem(STORAGE.transcript, state.transcriptRaw);
+    localStorage.setItem(STORAGE.shadowingDate, state.todayKey);
+    localStorage.setItem(STORAGE.shadowingCustom, "true");
     state.activeTranscriptIndex = -1;
     renderTranscript();
     closeModal();
@@ -3751,6 +3880,7 @@ function init() {
   loadTodayProgress(state.todayKey);
   loadBusinessProgress(state.todayKey);
   setDateHeading(state.todayKey);
+  syncDailyShadowingLesson(state.todayKey);
   renderDifficulty();
   renderCurrentLesson();
   renderBusinessLesson();
