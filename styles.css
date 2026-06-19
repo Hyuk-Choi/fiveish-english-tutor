@@ -5218,3 +5218,325 @@ html {
     height: 18px;
   }
 }
+
+/* Gamified learning path inspired by modern speaking apps */
+.daily-quest-board,
+.learning-map {
+  margin-bottom: 22px;
+  border: 1px solid rgba(231, 234, 243, 0.92);
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 20px 46px rgba(6, 27, 85, 0.08);
+}
+
+.daily-quest-board {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.9fr) minmax(0, 1.5fr);
+  align-items: center;
+  gap: 20px;
+  padding: 22px;
+}
+
+.daily-quest-board h2,
+.map-heading h2 {
+  margin: 0;
+  color: var(--speak-navy);
+  font-family: "Noto Sans KR", sans-serif;
+  font-size: 21px;
+  letter-spacing: -0.8px;
+}
+
+.quest-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.quest-list article {
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid #edf0f7;
+  border-radius: 22px;
+  background:
+    linear-gradient(180deg, #ffffff, #f8faff);
+}
+
+.quest-list i {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  margin-bottom: 12px;
+  border-radius: 14px;
+  background: var(--speak-orange-soft);
+  color: var(--speak-orange);
+}
+
+.quest-list svg {
+  width: 18px;
+}
+
+.quest-list strong,
+.quest-list small {
+  display: block;
+  font-family: "Noto Sans KR", sans-serif;
+}
+
+.quest-list strong {
+  color: #161b3c;
+  font-size: 13px;
+}
+
+.quest-list small {
+  margin-top: 4px;
+  color: #68708a;
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.learning-map {
+  overflow: hidden;
+  padding: 24px;
+}
+
+.map-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.map-track {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+  min-height: 152px;
+  align-items: center;
+}
+
+.map-track::before {
+  position: absolute;
+  top: 50%;
+  right: 7%;
+  left: 7%;
+  height: 8px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--speak-orange), var(--speak-blue));
+  content: "";
+  opacity: 0.18;
+}
+
+.map-node {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  min-height: 126px;
+  place-items: center;
+  align-content: center;
+  gap: 5px;
+  padding: 16px 10px;
+  border: 1px solid #e8ecf7;
+  border-radius: 28px;
+  background: #ffffff;
+  color: #4d5570;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 12px 26px rgba(6, 27, 85, 0.07);
+  transition: 180ms ease;
+}
+
+.map-node:nth-child(even) {
+  transform: translateY(18px);
+}
+
+.map-node:hover,
+.map-node.active,
+.map-node.current {
+  border-color: rgba(36, 92, 255, 0.22);
+  background: linear-gradient(180deg, #f7f9ff, #ffffff);
+  transform: translateY(-3px);
+}
+
+.map-node:nth-child(even):hover,
+.map-node:nth-child(even).active {
+  transform: translateY(12px);
+}
+
+.map-node > span {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border-radius: 18px;
+  background: #edf2ff;
+  color: var(--speak-blue);
+  font-weight: 800;
+  box-shadow: inset 0 -4px 0 rgba(36, 92, 255, 0.08);
+}
+
+.map-node.current > span,
+.map-node.active > span {
+  background: linear-gradient(135deg, var(--speak-orange), #ffb13d);
+  color: #24143b;
+}
+
+.map-node.boss > span {
+  background: linear-gradient(135deg, var(--speak-navy), var(--speak-blue));
+  color: #ffffff;
+}
+
+.map-node svg {
+  width: 22px;
+}
+
+.map-node strong,
+.map-node small {
+  display: block;
+  font-family: "Noto Sans KR", sans-serif;
+}
+
+.map-node strong {
+  margin-top: 4px;
+  color: var(--speak-navy);
+  font-size: 13px;
+}
+
+.map-node small {
+  color: #6a728d;
+  font-size: 10px;
+}
+
+.page-heading {
+  padding: 2px 2px 0;
+}
+
+.lesson-layout {
+  gap: 24px;
+}
+
+.shadowing-layout,
+.conversation-practice-layout,
+.opic-exam-layout {
+  gap: 24px;
+}
+
+.scenario-button,
+.transcript-line,
+.saved-card,
+.opic-topic-grid label > span,
+.opic-level-options label > span {
+  border-radius: 22px;
+}
+
+.live-chat-log {
+  background:
+    radial-gradient(circle at 20% 0%, rgba(255, 139, 24, 0.08), transparent 28%),
+    #f8faff;
+}
+
+.live-message.tutor .live-bubble,
+.turn-coaching {
+  box-shadow: 0 12px 24px rgba(6, 27, 85, 0.06);
+}
+
+.empty-state {
+  border-radius: 30px;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(255, 139, 24, 0.14), transparent 32%),
+    #ffffff;
+  box-shadow: 0 20px 46px rgba(6, 27, 85, 0.08);
+}
+
+@media (max-width: 1050px) {
+  .daily-quest-board {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .daily-quest-board,
+  .learning-map {
+    border-radius: 28px;
+  }
+
+  .quest-list,
+  .map-track {
+    display: flex;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scroll-snap-type: x proximity;
+  }
+
+  .quest-list article {
+    min-width: 172px;
+    scroll-snap-align: start;
+  }
+
+  .map-track {
+    min-height: 150px;
+  }
+
+  .map-track::before {
+    display: none;
+  }
+
+  .map-node {
+    min-width: 142px;
+    scroll-snap-align: start;
+  }
+}
+
+@media (max-width: 560px) {
+  .daily-quest-board,
+  .learning-map {
+    padding: 20px;
+  }
+
+  .daily-quest-board h2,
+  .map-heading h2 {
+    font-size: 18px;
+  }
+
+  .quest-list article {
+    min-width: 158px;
+  }
+
+  .map-node {
+    min-width: 136px;
+  }
+}
+
+/* Mobile readability pass */
+@media (max-width: 900px) {
+  .page-heading {
+    gap: 14px;
+  }
+
+  .streak-pill {
+    width: fit-content;
+    min-width: 0;
+    justify-self: start;
+    gap: 8px;
+    padding: 9px 12px;
+  }
+
+  .streak-pill > span:last-child {
+    display: block;
+  }
+
+  .streak-pill small {
+    font-size: 9px;
+  }
+
+  .streak-pill strong {
+    font-size: 13px;
+  }
+
+  .streak-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 12px;
+  }
+}
