@@ -6087,18 +6087,19 @@ html {
 /* Mobile text placement refinement */
 @media (max-width: 900px) {
   #today-view .page-heading {
-    position: relative;
-    display: block;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    column-gap: 10px;
   }
 
   #today-view .page-heading .eyebrow {
-    padding-right: 104px;
+    padding-right: 0;
   }
 
   #today-view .streak-pill {
-    position: absolute;
-    top: 0;
-    right: 0;
+    position: static;
+    justify-self: end;
   }
 
   #today-view .page-heading h1 {
@@ -6132,5 +6133,78 @@ html {
   #today-view .quest-list small {
     font-size: 9.5px;
     line-height: 1.35;
+  }
+}
+
+/* Text visibility and placement pass */
+@media (max-width: 900px) {
+  #today-view .page-heading h1 {
+    font-size: 29px;
+    line-height: 1.18;
+  }
+
+  #today-view .heading-copy {
+    font-size: 13.5px;
+    line-height: 1.6;
+  }
+
+  #today-view .streak-pill {
+    min-height: 42px;
+    padding: 8px 11px 8px 8px;
+  }
+
+  #today-view .streak-pill strong {
+    font-size: 12.5px;
+  }
+
+  #today-view .tutor-hero h2 {
+    max-width: 240px;
+    font-size: 30px;
+    line-height: 1.12;
+  }
+
+  #today-view .tutor-hero p {
+    max-width: 280px;
+    font-size: 13.5px;
+    line-height: 1.58;
+  }
+
+  #today-view .tutor-start-button {
+    font-size: 12.5px;
+  }
+
+  #today-view .speak-path strong {
+    font-size: 15px;
+  }
+
+  #today-view .speak-path p {
+    font-size: 11px;
+    line-height: 1.45;
+  }
+
+  #today-view .quest-list strong {
+    font-size: 12.5px;
+  }
+
+  #today-view .quest-list small {
+    font-size: 10px;
+  }
+
+  #today-view .map-node strong {
+    font-size: 12.5px;
+  }
+
+  #today-view .map-node small {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 420px) {
+  #today-view .page-heading h1 {
+    font-size: 28px;
+  }
+
+  #today-view .tutor-hero h2 {
+    font-size: 29px;
   }
 }
