@@ -4604,3 +4604,617 @@ body {
     display: none;
   }
 }
+
+/* Speak app inspired polish: voice-first cards, compact app navigation, deep brand contrast */
+:root {
+  --speak-navy: #061b55;
+  --speak-navy-2: #0a2a78;
+  --speak-blue: #245cff;
+  --speak-orange: #ff8b18;
+  --speak-orange-soft: #fff2df;
+  --speak-surface: #ffffff;
+  --speak-bg: #f6f7fb;
+  --speak-border: #e7eaf3;
+  --speak-shadow: 0 22px 58px rgba(6, 27, 85, 0.1);
+  --speak-card-radius: 30px;
+  --ink: #10152f;
+  --ink-soft: #565c74;
+  --navy: var(--speak-navy);
+  --navy-hover: var(--speak-navy-2);
+  --cream: var(--speak-bg);
+  --paper: var(--speak-surface);
+  --line: var(--speak-border);
+  --line-light: #edf0f7;
+  --gold: var(--speak-orange);
+  --gold-soft: var(--speak-orange-soft);
+  --green: var(--speak-blue);
+  --green-soft: #edf2ff;
+  --shadow: var(--speak-shadow);
+}
+
+body {
+  background:
+    radial-gradient(circle at 15% -10%, rgba(255, 139, 24, 0.13), transparent 30%),
+    radial-gradient(circle at 85% 0%, rgba(36, 92, 255, 0.12), transparent 34%),
+    var(--speak-bg);
+  overflow-x: hidden;
+}
+
+html {
+  overflow-x: hidden;
+}
+
+.main-content {
+  padding-top: 42px;
+}
+
+.sidebar {
+  border-right: 0;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(250, 251, 255, 0.94)),
+    var(--speak-surface);
+  box-shadow: 18px 0 44px rgba(6, 27, 85, 0.05);
+}
+
+.brand-mark {
+  border-radius: 15px;
+  box-shadow: 0 12px 26px rgba(6, 27, 85, 0.2);
+}
+
+.brand small {
+  color: #8b91a6;
+  font-weight: 700;
+  letter-spacing: 0.35px;
+  text-transform: uppercase;
+}
+
+.nav-item {
+  min-height: 50px;
+  border-radius: 17px;
+  color: #69708a;
+  letter-spacing: -0.2px;
+}
+
+.nav-item:hover {
+  background: #eef3ff;
+  color: var(--speak-blue);
+}
+
+.nav-item.active {
+  background: linear-gradient(135deg, var(--speak-navy), var(--speak-blue));
+  color: #ffffff;
+  box-shadow: 0 14px 28px rgba(36, 92, 255, 0.22);
+}
+
+.difficulty-card,
+.weekly-card,
+.install-app-button,
+.progress-overview,
+.lesson-list-panel,
+.lesson-card,
+.quiz-card,
+.video-panel,
+.transcript-panel,
+.saved-card,
+.live-conversation-card,
+.opic-setup-card,
+.opic-test-shell,
+.opic-result-card {
+  border-color: rgba(231, 234, 243, 0.9);
+  border-radius: var(--speak-card-radius);
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: var(--speak-shadow);
+}
+
+.difficulty-card {
+  background: linear-gradient(180deg, #ffffff, #f3f6ff);
+}
+
+.difficulty-options {
+  background: #eaf0ff;
+}
+
+.difficulty-options button.active {
+  color: var(--speak-navy);
+  box-shadow: 0 6px 14px rgba(6, 27, 85, 0.12);
+}
+
+.install-app-button > span:first-child,
+.streak-icon,
+.business-progress-pill > span,
+.quiz-icon,
+.conversation-goal-card > span,
+.opic-format-pill > span,
+.opic-avatar,
+.chat.reply .chat-avatar {
+  background: linear-gradient(135deg, var(--speak-orange), #ffb13d);
+  color: #ffffff;
+}
+
+.page-heading {
+  align-items: center;
+}
+
+.eyebrow,
+.section-kicker {
+  color: var(--speak-orange);
+  letter-spacing: 1.4px;
+}
+
+.page-heading h1 {
+  color: var(--speak-navy);
+}
+
+.page-heading h1 em {
+  color: var(--speak-blue);
+}
+
+.streak-pill,
+.business-progress-pill,
+.opic-format-pill {
+  border-color: rgba(231, 234, 243, 0.9);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 16px 34px rgba(6, 27, 85, 0.08);
+}
+
+.tutor-hero {
+  min-height: 318px;
+  border-radius: 34px;
+  background:
+    radial-gradient(circle at 80% 20%, rgba(255, 139, 24, 0.34), transparent 16%),
+    radial-gradient(circle at 72% 72%, rgba(36, 92, 255, 0.38), transparent 27%),
+    linear-gradient(135deg, #05184b 0%, #08246e 58%, #061b55 100%);
+  box-shadow: 0 30px 70px rgba(6, 27, 85, 0.28);
+}
+
+.tutor-hero::before {
+  position: absolute;
+  top: 28px;
+  right: 38px;
+  width: 86px;
+  height: 86px;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.08);
+  content: "";
+  transform: rotate(10deg);
+}
+
+.tutor-hero::after {
+  right: 145px;
+  bottom: -100px;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.tutor-badge {
+  padding: 8px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff4e6;
+  backdrop-filter: blur(12px);
+}
+
+.tutor-hero h2 {
+  max-width: 620px;
+  font-size: clamp(35px, 5vw, 58px);
+  line-height: 1.04;
+  letter-spacing: -3px;
+}
+
+.tutor-hero h2 strong {
+  color: #ffffff;
+}
+
+.tutor-hero p {
+  max-width: 430px;
+  color: #dfe6ff;
+  font-size: 14px;
+}
+
+.tutor-start-button,
+.primary-button {
+  border-radius: 18px;
+  background: linear-gradient(135deg, var(--speak-orange), #ffad2e);
+  color: #20113a;
+  box-shadow: 0 14px 30px rgba(255, 139, 24, 0.25);
+}
+
+.primary-button {
+  border-color: transparent;
+}
+
+.tutor-start-button svg,
+.primary-button svg {
+  color: currentColor;
+}
+
+.primary-button:hover,
+.tutor-start-button:hover {
+  border-color: transparent;
+  background: linear-gradient(135deg, #ff7f0f, #ffa51d);
+  transform: translateY(-1px);
+}
+
+.primary-button.completed {
+  background: #edf2ff;
+  color: var(--speak-blue);
+  box-shadow: none;
+}
+
+.tutor-orb {
+  background: radial-gradient(circle at 35% 30%, #ffffff 0 13%, var(--speak-orange) 14% 28%, #ff7a00 29% 100%);
+  box-shadow: 0 24px 50px rgba(255, 139, 24, 0.25);
+}
+
+.mic-core {
+  color: var(--speak-navy);
+}
+
+.speak-path {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin: -4px 0 22px;
+}
+
+.speak-path article {
+  position: relative;
+  overflow: hidden;
+  min-height: 132px;
+  padding: 20px;
+  border: 1px solid rgba(231, 234, 243, 0.92);
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 16px 34px rgba(6, 27, 85, 0.07);
+}
+
+.speak-path article::after {
+  position: absolute;
+  right: -24px;
+  bottom: -36px;
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  background: rgba(36, 92, 255, 0.08);
+  content: "";
+}
+
+.speak-path span {
+  display: inline-grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 13px;
+  background: var(--speak-orange-soft);
+  color: var(--speak-orange);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.speak-path strong {
+  display: block;
+  margin-top: 15px;
+  color: var(--speak-navy);
+  font-size: 18px;
+  letter-spacing: -0.6px;
+}
+
+.speak-path p {
+  margin: 6px 0 0;
+  color: #626981;
+  font-family: "Noto Sans KR", sans-serif;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.progress-overview {
+  grid-template-columns: minmax(210px, auto) minmax(180px, 1fr) auto;
+}
+
+.progress-track {
+  height: 10px;
+  background: #e8edfb;
+}
+
+.progress-track span {
+  background: linear-gradient(90deg, var(--speak-orange), var(--speak-blue));
+}
+
+.lesson-list-panel,
+.lesson-card {
+  border-radius: 32px;
+}
+
+.lesson-item {
+  border-radius: 19px;
+}
+
+.lesson-item.active {
+  border-color: rgba(36, 92, 255, 0.16);
+  background: linear-gradient(135deg, #eef3ff, #ffffff);
+  box-shadow: 0 12px 24px rgba(36, 92, 255, 0.08);
+}
+
+.lesson-item.active .lesson-item-number {
+  background: var(--speak-navy);
+}
+
+.phrase-meta,
+.lesson-number,
+.quiz-situation {
+  color: var(--speak-orange);
+}
+
+.phrase-heading h2,
+.chat.reply p,
+.video-info h2,
+.saved-card h2 {
+  color: var(--speak-navy);
+}
+
+.listen-button {
+  border-color: #e3e8f4;
+  border-radius: 999px;
+  background: #f6f8ff;
+  color: var(--speak-blue);
+}
+
+.meaning-block,
+.phrase-heading {
+  border-bottom-color: #edf0f7;
+}
+
+.conversation-block,
+.business-dialogue,
+.business-quiz,
+.turn-coaching {
+  border-color: #e7ecf7;
+  border-radius: 24px;
+  background: #f7f9ff;
+}
+
+.chat-avatar {
+  background: #e8edf9;
+  color: var(--speak-navy);
+}
+
+.variation-chips span,
+.quiz-option {
+  border-color: #e0e6f3;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #3f4660;
+}
+
+.quiz-card {
+  border-color: rgba(255, 139, 24, 0.18);
+  background: linear-gradient(135deg, #fff7ed, #ffffff 58%, #f4f7ff);
+  box-shadow: 0 18px 42px rgba(6, 27, 85, 0.08);
+}
+
+.quiz-intro {
+  border-right-color: rgba(255, 139, 24, 0.2);
+}
+
+.quiz-sentence strong {
+  border-bottom-color: var(--speak-orange);
+  color: var(--speak-navy);
+}
+
+.quiz-option.correct {
+  border-color: rgba(36, 92, 255, 0.22);
+  background: #edf2ff;
+  color: var(--speak-blue);
+}
+
+.business-context-note,
+.shadow-tip {
+  border-color: #e7ecf7;
+  border-radius: 22px;
+  background: #f7f9ff;
+}
+
+.live-conversation-card {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 255, 0.98));
+}
+
+.conversation-composer {
+  border-radius: 0 0 30px 30px;
+}
+
+.send-conversation-button,
+.voice-record-button,
+.opic-record-button {
+  background: linear-gradient(135deg, var(--speak-orange), #ffad2e);
+  color: #20113a;
+  box-shadow: 0 12px 28px rgba(255, 139, 24, 0.18);
+}
+
+.opic-setup-intro,
+.opic-result-hero,
+.opic-prompt-card {
+  background:
+    radial-gradient(circle at 78% 18%, rgba(255, 139, 24, 0.3), transparent 22%),
+    linear-gradient(135deg, var(--speak-navy), var(--speak-navy-2));
+}
+
+.opic-topic-grid input:checked + span,
+.opic-level-options input:checked + span {
+  border-color: rgba(36, 92, 255, 0.2);
+  background: #edf2ff;
+  color: var(--speak-blue);
+}
+
+.opic-progress-track span,
+.opic-result-metrics em {
+  background: linear-gradient(90deg, var(--speak-orange), var(--speak-blue));
+}
+
+.mobile-nav {
+  grid-template-columns: repeat(6, 1fr);
+}
+
+@media (max-width: 1050px) {
+  .tutor-hero {
+    min-height: 286px;
+  }
+}
+
+@media (max-width: 900px) {
+  .main-content {
+    padding-inline: 18px;
+  }
+
+  .mobile-header {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    margin-inline: -18px;
+    padding-inline: 18px;
+    background: rgba(246, 247, 251, 0.88);
+    backdrop-filter: blur(18px);
+  }
+
+  .mobile-header .brand-mark {
+    width: 38px;
+    height: 38px;
+    border-radius: 14px;
+  }
+
+  .mobile-nav {
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    grid-template-columns: repeat(6, 1fr);
+    border: 1px solid rgba(231, 234, 243, 0.92);
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.94);
+    box-shadow: 0 -8px 34px rgba(6, 27, 85, 0.16);
+  }
+
+  .mobile-nav button {
+    min-height: 52px;
+    border-radius: 18px;
+    font-size: 9px;
+  }
+
+  .mobile-nav button.active {
+    background: #edf2ff;
+    color: var(--speak-blue);
+  }
+
+  .page-heading {
+    display: grid;
+  }
+
+  .tutor-hero {
+    border-radius: 30px;
+  }
+
+  .speak-path {
+    grid-template-columns: repeat(3, minmax(180px, 1fr));
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scroll-snap-type: x proximity;
+  }
+
+  .speak-path article {
+    scroll-snap-align: start;
+  }
+
+  .progress-overview {
+    grid-template-columns: 1fr auto;
+  }
+}
+
+@media (max-width: 560px) {
+  body {
+    padding-bottom: 96px;
+  }
+
+  .main-content {
+    padding-inline: 16px;
+  }
+
+  .page-heading {
+    margin-top: 12px;
+  }
+
+  .page-heading h1 {
+    font-size: 31px;
+  }
+
+  .tutor-hero {
+    padding: 28px 22px 30px;
+    border-radius: 30px;
+  }
+
+  .tutor-hero h2 {
+    max-width: 260px;
+    font-size: 34px;
+    letter-spacing: -2.2px;
+  }
+
+  .tutor-hero p {
+    max-width: 260px;
+    font-size: 13px;
+  }
+
+  .tutor-orb {
+    top: 20px;
+    right: 18px;
+    width: 82px;
+    height: 82px;
+  }
+
+  .speak-path {
+    grid-template-columns: repeat(3, minmax(170px, 1fr));
+    margin-top: -6px;
+  }
+
+  .speak-path article {
+    min-height: 126px;
+    padding: 18px;
+  }
+
+  .progress-overview,
+  .lesson-list-panel,
+  .lesson-card,
+  .quiz-card,
+  .video-panel,
+  .transcript-panel,
+  .live-conversation-card,
+  .opic-setup-card,
+  .opic-test-shell,
+  .opic-result-card {
+    border-radius: 28px;
+  }
+
+  .lesson-item {
+    min-width: 186px;
+  }
+
+  .phrase-heading h2 {
+    font-size: 38px;
+  }
+
+  .quiz-card {
+    padding: 22px;
+  }
+
+  .mobile-nav {
+    padding: 8px 7px max(8px, env(safe-area-inset-bottom));
+  }
+
+  .mobile-nav button {
+    min-height: 48px;
+    font-size: 8px;
+  }
+
+  .mobile-nav svg {
+    width: 18px;
+    height: 18px;
+  }
+}
