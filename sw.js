@@ -1,4 +1,4 @@
-const CACHE_NAME = "fiveish-v16";
+const CACHE_NAME = "fiveish-v17";
 const HOME_URL = new URL("./", self.registration.scope).href;
 const APP_SHELL = [
   "./",
