@@ -1,9 +1,9 @@
-const CACHE_NAME = "fiveish-v29";
+const CACHE_NAME = "fiveish-v30";
 const HOME_URL = new URL("./", self.registration.scope).href;
 const APP_SHELL = [
   "./",
   "index.html",
-  "styles.css?v=28",
+  "styles.css?v=30",
   "app.js",
   "manifest.webmanifest",
   "icons/icon-192.png?v=29",
