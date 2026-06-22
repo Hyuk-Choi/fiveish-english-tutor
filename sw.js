@@ -1,4 +1,4 @@
-const CACHE_NAME = "fiveish-v30";
+const CACHE_NAME = "fiveish-v31";
 const HOME_URL = new URL("./", self.registration.scope).href;
 const APP_SHELL = [
   "./",
@@ -6,9 +6,9 @@ const APP_SHELL = [
   "styles.css?v=30",
   "app.js",
   "manifest.webmanifest",
-  "icons/icon-192.png?v=29",
-  "icons/icon-512.png?v=29",
-  "icons/maskable-512.png?v=29",
+  "icons/icon-192.png?v=31",
+  "icons/icon-512.png?v=31",
+  "icons/maskable-512.png?v=31",
 ].map((path) => new URL(path, self.registration.scope).href);
 
 self.addEventListener("install", (event) => {
