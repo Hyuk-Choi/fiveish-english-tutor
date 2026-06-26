@@ -1898,19 +1898,76 @@ const STORAGE = {
   transcript: "fiveish-transcript",
   shadowingDate: "fiveish-shadowing-date",
   shadowingCustom: "fiveish-shadowing-custom",
+  shadowingVideoDate: "fiveish-shadowing-video-date",
+  shadowingVideoId: "fiveish-shadowing-video-id",
   difficulty: "fiveish-difficulty",
   opicHistory: "fiveish-opic-history",
 };
+
+function readStorage(key, fallback = null) {
+  try {
+    const value = localStorage.getItem(key);
+    return value === null ? fallback : value;
+  } catch {
+    return fallback;
+  }
+}
+
+function writeStorage(key, value) {
+  try {
+    localStorage.setItem(key, value);
+  } catch {
+    showToast("저장 공간을 사용할 수 없어 이번 변경은 임시로만 적용됩니다.");
+  }
+}
+
+function removeStorage(key) {
+  try {
+    localStorage.removeItem(key);
+  } catch {
+    // Ignore storage cleanup failures so the app can keep running.
+  }
+}
+
+function readJsonStorage(key, fallback) {
+  try {
+    const raw = localStorage.getItem(key);
+    if (raw === null) return fallback;
+    return JSON.parse(raw);
+  } catch {
+    removeStorage(key);
+    return fallback;
+  }
+}
+
+function readJsonArrayStorage(key) {
+  const value = readJsonStorage(key, []);
+  return Array.isArray(value) ? value : [];
+}
+
+function readJsonObjectStorage(key) {
+  const value = readJsonStorage(key, {});
+  return value && typeof value === "object" && !Array.isArray(value) ? value : {};
+}
+
+function writeJsonStorage(key, value) {
+  writeStorage(key, JSON.stringify(value));
+}
+
+function getStoredDifficulty() {
+  const stored = readStorage(STORAGE.difficulty, "intermediate");
+  return difficultyExpressionIds[stored] ? stored : "intermediate";
+}
 
 const state = {
   todayKey: localDateKey(),
   dailyExpressions: [],
   activeIndex: 0,
   completed: new Set(),
-  difficulty: localStorage.getItem(STORAGE.difficulty) || "intermediate",
-  saved: new Set(JSON.parse(localStorage.getItem(STORAGE.saved) || "[]")),
+  difficulty: getStoredDifficulty(),
+  saved: new Set(readJsonArrayStorage(STORAGE.saved)),
   transcript: [],
-  transcriptRaw: localStorage.getItem(STORAGE.transcript) || defaultTranscript,
+  transcriptRaw: readStorage(STORAGE.transcript, defaultTranscript) || defaultTranscript,
   activeTranscriptIndex: -1,
   loopActive: false,
   playerReady: false,
@@ -2084,34 +2141,43 @@ function getShadowingVideoUrl(videoId) {
 
 function syncDailyShadowingLesson(dateKey = state.todayKey) {
   const lesson = getDailyShadowingLesson(dateKey);
-  const storedDate = localStorage.getItem(STORAGE.shadowingDate);
+  const storedDate = readStorage(STORAGE.shadowingDate);
+  const storedVideoDate = readStorage(STORAGE.shadowingVideoDate);
+  const storedVideoId = readStorage(STORAGE.shadowingVideoId);
   const keepTodayCustomScript =
-    storedDate === dateKey && localStorage.getItem(STORAGE.shadowingCustom) === "true";
+    storedDate === dateKey && readStorage(STORAGE.shadowingCustom) === "true";
+  const keepTodayCustomVideo = storedVideoDate === dateKey && /^[\w-]{11}$/.test(storedVideoId || "");
 
   state.shadowingLesson = lesson;
-  state.currentVideoId = lesson.videoId;
+  state.currentVideoId = keepTodayCustomVideo ? storedVideoId : lesson.videoId;
   state.activeTranscriptIndex = -1;
 
   if (!keepTodayCustomScript) {
     state.transcriptRaw = lesson.transcript;
-    localStorage.setItem(STORAGE.transcript, state.transcriptRaw);
-    localStorage.setItem(STORAGE.shadowingDate, dateKey);
-    localStorage.setItem(STORAGE.shadowingCustom, "false");
+    writeStorage(STORAGE.transcript, state.transcriptRaw);
+    writeStorage(STORAGE.shadowingDate, dateKey);
+    writeStorage(STORAGE.shadowingCustom, "false");
+  }
+
+  if (!keepTodayCustomVideo) {
+    removeStorage(STORAGE.shadowingVideoDate);
+    removeStorage(STORAGE.shadowingVideoId);
   }
 
   const input = document.querySelector("#youtube-url");
   const title = document.querySelector("#video-title");
   const source = document.querySelector("#video-source");
-  if (input) input.value = getShadowingVideoUrl(lesson.videoId);
-  if (title) title.textContent = lesson.title;
+  if (input) input.value = getShadowingVideoUrl(state.currentVideoId);
+  if (title) title.textContent = keepTodayCustomVideo ? "나의 YouTube 쉐도잉 영상" : lesson.title;
   if (source) {
-    source.textContent = keepTodayCustomScript
-      ? `${lesson.source} · 직접 편집한 스크립트`
-      : `${lesson.source} · 오늘의 추천`;
+    const scriptLabel = keepTodayCustomScript ? "직접 편집한 스크립트" : "오늘의 추천 스크립트";
+    source.textContent = keepTodayCustomVideo
+      ? `직접 선택한 영상 · ${scriptLabel}`
+      : `${lesson.source} · ${keepTodayCustomScript ? "직접 편집한 스크립트" : "오늘의 추천"}`;
   }
 
   if (state.playerReady && player) {
-    player.cueVideoById(lesson.videoId);
+    player.cueVideoById(state.currentVideoId);
     document.querySelector("#video-placeholder")?.classList.add("hidden");
   }
 
@@ -2119,7 +2185,7 @@ function syncDailyShadowingLesson(dateKey = state.todayKey) {
 }
 
 function getProgressStore() {
-  return JSON.parse(localStorage.getItem(STORAGE.progress) || "{}");
+  return readJsonObjectStorage(STORAGE.progress);
 }
 
 function dailyProgressKey(dateKey = state.todayKey) {
@@ -2129,7 +2195,7 @@ function dailyProgressKey(dateKey = state.todayKey) {
 function saveProgress() {
   const store = getProgressStore();
   store[dailyProgressKey()] = [...state.completed];
-  localStorage.setItem(STORAGE.progress, JSON.stringify(store));
+  writeJsonStorage(STORAGE.progress, store);
 }
 
 function loadTodayProgress(dateKey = state.todayKey) {
@@ -2216,8 +2282,8 @@ function renderLessonList() {
         }" data-lesson-index="${index}">
           <span class="lesson-item-number">${String(index + 1).padStart(2, "0")}</span>
           <span class="lesson-item-text">
-            <strong>${expression.phrase}</strong>
-            <small>${expression.meaning}</small>
+            <strong>${escapeHtml(expression.phrase)}</strong>
+            <small>${escapeHtml(expression.meaning)}</small>
           </span>
           <i data-lucide="chevron-right"></i>
         </button>
@@ -2250,7 +2316,7 @@ function renderCurrentLesson() {
   document.querySelector("#example-b").textContent = expression.b;
   document.querySelector("#example-translation").textContent = expression.translation;
   document.querySelector("#variation-chips").innerHTML = expression.variations
-    .map((variation) => `<span>${variation}</span>`)
+    .map((variation) => `<span>${escapeHtml(variation)}</span>`)
     .join("");
 
   const bookmarkButton = document.querySelector("#bookmark-button");
@@ -2277,9 +2343,9 @@ function renderQuiz(expression) {
   const blank = "<strong>______</strong>";
   document.querySelector("#quiz-situation").textContent = expression.quizSituation;
   document.querySelector("#quiz-sentence").innerHTML = [
-    expression.quizLead,
+    escapeHtml(expression.quizLead),
     blank,
-    expression.quizTail,
+    escapeHtml(expression.quizTail),
   ]
     .filter(Boolean)
     .join(" ");
@@ -2290,7 +2356,10 @@ function renderQuiz(expression) {
   );
   const optionsWrap = document.querySelector("#quiz-options");
   optionsWrap.innerHTML = options
-    .map((option) => `<button class="quiz-option" data-answer="${encodeURIComponent(option)}">${option}</button>`)
+    .map(
+      (option) =>
+        `<button class="quiz-option" data-answer="${encodeURIComponent(option)}">${escapeHtml(option)}</button>`,
+    )
     .join("");
 
   const feedback = document.querySelector("#quiz-feedback");
@@ -2333,7 +2402,7 @@ function renderProgress() {
 }
 
 function getBusinessProgressStore() {
-  return JSON.parse(localStorage.getItem(STORAGE.businessProgress) || "{}");
+  return readJsonObjectStorage(STORAGE.businessProgress);
 }
 
 function loadBusinessProgress(dateKey = state.todayKey) {
@@ -2344,7 +2413,7 @@ function loadBusinessProgress(dateKey = state.todayKey) {
 function saveBusinessProgress() {
   const store = getBusinessProgressStore();
   store[state.todayKey] = [...businessState.completed];
-  localStorage.setItem(STORAGE.businessProgress, JSON.stringify(store));
+  writeJsonStorage(STORAGE.businessProgress, store);
 }
 
 function renderBusinessProgress() {
@@ -2362,8 +2431,8 @@ function renderBusinessLessonList() {
         }" data-business-lesson-index="${index}">
           <span class="lesson-item-number">${String(index + 1).padStart(2, "0")}</span>
           <span class="lesson-item-text">
-            <strong>${expression.phrase}</strong>
-            <small>${expression.meaning}</small>
+            <strong>${escapeHtml(expression.phrase)}</strong>
+            <small>${escapeHtml(expression.meaning)}</small>
           </span>
           <i data-lucide="chevron-right"></i>
         </button>
@@ -2384,9 +2453,9 @@ function renderBusinessQuiz(expression) {
   document.querySelector("#business-quiz-situation").textContent =
     expression.quizSituation;
   document.querySelector("#business-quiz-sentence").innerHTML = [
-    expression.quizLead,
+    escapeHtml(expression.quizLead),
     blank,
-    expression.quizTail,
+    escapeHtml(expression.quizTail),
   ]
     .filter(Boolean)
     .join(" ");
@@ -2399,7 +2468,7 @@ function renderBusinessQuiz(expression) {
   optionsWrap.innerHTML = options
     .map(
       (option) =>
-        `<button class="quiz-option" data-business-answer="${encodeURIComponent(option)}">${option}</button>`,
+        `<button class="quiz-option" data-business-answer="${encodeURIComponent(option)}">${escapeHtml(option)}</button>`,
     )
     .join("");
 
@@ -2449,7 +2518,7 @@ function renderBusinessLesson() {
   document.querySelector("#business-example-translation").textContent =
     expression.translation;
   document.querySelector("#business-variation-chips").innerHTML =
-    expression.variations.map((variation) => `<span>${variation}</span>`).join("");
+    expression.variations.map((variation) => `<span>${escapeHtml(variation)}</span>`).join("");
 
   const bookmarkButton = document.querySelector("#business-bookmark-button");
   bookmarkButton.classList.toggle("saved", state.saved.has(expression.id));
@@ -2481,21 +2550,21 @@ function toggleBusinessBookmark() {
     state.saved.add(expression.id);
     showToast("비즈니스 표현을 저장했어요.");
   }
-  localStorage.setItem(STORAGE.saved, JSON.stringify([...state.saved]));
+  writeJsonStorage(STORAGE.saved, [...state.saved]);
   renderBusinessLesson();
   renderSaved();
 }
 
 function markStudyDate() {
-  const dates = new Set(JSON.parse(localStorage.getItem(STORAGE.studyDates) || "[]"));
+  const dates = new Set(readJsonArrayStorage(STORAGE.studyDates));
   dates.add(state.todayKey);
-  localStorage.setItem(STORAGE.studyDates, JSON.stringify([...dates]));
+  writeJsonStorage(STORAGE.studyDates, [...dates]);
   renderStreak();
   renderWeek();
 }
 
 function calculateStreak() {
-  const dates = new Set(JSON.parse(localStorage.getItem(STORAGE.studyDates) || "[]"));
+  const dates = new Set(readJsonArrayStorage(STORAGE.studyDates));
   if (!dates.size) return 0;
 
   let cursor = new Date();
@@ -2512,7 +2581,7 @@ function calculateStreak() {
 }
 
 function renderStreak() {
-  document.querySelector("#streak-number").textContent = Math.max(calculateStreak(), 1);
+  document.querySelector("#streak-number").textContent = calculateStreak();
 }
 
 function startOfWeek(date) {
@@ -2525,7 +2594,7 @@ function startOfWeek(date) {
 }
 
 function renderWeek() {
-  const dates = new Set(JSON.parse(localStorage.getItem(STORAGE.studyDates) || "[]"));
+  const dates = new Set(readJsonArrayStorage(STORAGE.studyDates));
   const labels = ["월", "화", "수", "목", "금", "토", "일"];
   const monday = startOfWeek(new Date());
   let weekCount = 0;
@@ -2579,7 +2648,7 @@ function toggleBookmark() {
     state.saved.add(expression.id);
     showToast("표현을 저장했어요.");
   }
-  localStorage.setItem(STORAGE.saved, JSON.stringify([...state.saved]));
+  writeJsonStorage(STORAGE.saved, [...state.saved]);
   renderCurrentLesson();
   renderSaved();
 }
@@ -2595,14 +2664,14 @@ function renderSaved() {
       (expression) => `
         <article class="saved-card">
           <div class="saved-card-top">
-            <span>${expression.category}</span>
-            <button class="icon-button saved" data-remove-saved="${expression.id}" aria-label="저장 취소">
+            <span>${escapeHtml(expression.category)}</span>
+            <button class="icon-button saved" data-remove-saved="${escapeHtml(expression.id)}" aria-label="저장 취소">
               <i data-lucide="bookmark-x"></i>
             </button>
           </div>
-          <h2>${expression.phrase}</h2>
-          <p>${expression.meaning}</p>
-          <button class="listen-button" data-speak-saved="${expression.id}">
+          <h2>${escapeHtml(expression.phrase)}</h2>
+          <p>${escapeHtml(expression.meaning)}</p>
+          <button class="listen-button" data-speak-saved="${escapeHtml(expression.id)}">
             <i data-lucide="volume-2"></i>
             발음 듣기
           </button>
@@ -2614,7 +2683,7 @@ function renderSaved() {
   grid.querySelectorAll("[data-remove-saved]").forEach((button) => {
     button.addEventListener("click", () => {
       state.saved.delete(button.dataset.removeSaved);
-      localStorage.setItem(STORAGE.saved, JSON.stringify([...state.saved]));
+      writeJsonStorage(STORAGE.saved, [...state.saved]);
       renderSaved();
       renderCurrentLesson();
       renderBusinessLesson();
@@ -2662,8 +2731,9 @@ function renderDifficulty() {
     intermediate: { korean: "중급", english: "Intermediate" },
     advanced: { korean: "고급", english: "Advanced" },
   };
-  const current = labels[state.difficulty];
+  const current = labels[state.difficulty] || labels.intermediate;
   document.querySelector("#difficulty-label").textContent = current.korean;
+  document.querySelector("#mobile-difficulty-label").textContent = current.korean;
   document.querySelector("#profile-level").textContent = current.english;
   document.querySelectorAll("[data-difficulty]").forEach((button) => {
     button.classList.toggle("active", button.dataset.difficulty === state.difficulty);
@@ -2674,7 +2744,7 @@ function setDifficulty(level) {
   refreshDailyContent({ announce: true });
   if (!difficultyExpressionIds[level] || level === state.difficulty) return;
   state.difficulty = level;
-  localStorage.setItem(STORAGE.difficulty, level);
+  writeStorage(STORAGE.difficulty, level);
   state.activeIndex = 0;
   state.dailyExpressions = getDailyExpressions(state.todayKey);
   loadTodayProgress(state.todayKey);
@@ -2836,8 +2906,8 @@ function renderTranscript() {
             }" data-transcript-index="${index}">
               <span class="transcript-time">${formatTimestamp(line.time)}</span>
               <span class="transcript-copy">
-                <strong>${line.english}</strong>
-                <small>${line.korean || "뜻을 추가해보세요."}</small>
+                <strong>${escapeHtml(line.english)}</strong>
+                <small>${escapeHtml(line.korean || "뜻을 추가해보세요.")}</small>
               </span>
               <i data-lucide="play"></i>
             </button>
@@ -2975,7 +3045,8 @@ function loadVideoFromInput() {
   }
   document.querySelector("#video-title").textContent = "나의 YouTube 쉐도잉 영상";
   document.querySelector("#video-source").textContent = "직접 선택한 영상 · YouTube";
-  localStorage.setItem(STORAGE.shadowingDate, state.todayKey);
+  writeStorage(STORAGE.shadowingVideoDate, state.todayKey);
+  writeStorage(STORAGE.shadowingVideoId, videoId);
   state.activeTranscriptIndex = -1;
   updateActiveTranscript(-1, false);
   showToast("영상을 불러왔어요. 스크립트를 맞춰보세요.");
@@ -3066,9 +3137,9 @@ function setupScriptEditor() {
       return;
     }
     state.transcriptRaw = editor.value.trim();
-    localStorage.setItem(STORAGE.transcript, state.transcriptRaw);
-    localStorage.setItem(STORAGE.shadowingDate, state.todayKey);
-    localStorage.setItem(STORAGE.shadowingCustom, "true");
+    writeStorage(STORAGE.transcript, state.transcriptRaw);
+    writeStorage(STORAGE.shadowingDate, state.todayKey);
+    writeStorage(STORAGE.shadowingCustom, "true");
     state.activeTranscriptIndex = -1;
     renderTranscript();
     closeModal();
@@ -3704,7 +3775,7 @@ function finishOpicTest() {
     ]),
   );
   const range = getOpicRange(average, opicState.level);
-  const history = JSON.parse(localStorage.getItem(STORAGE.opicHistory) || "[]");
+  const history = readJsonArrayStorage(STORAGE.opicHistory);
   history.unshift({
     date: localDateKey(),
     average,
@@ -3712,7 +3783,7 @@ function finishOpicTest() {
     target: rubric.label,
     answered: answers.length,
   });
-  localStorage.setItem(STORAGE.opicHistory, JSON.stringify(history.slice(0, 5)));
+  writeJsonStorage(STORAGE.opicHistory, history.slice(0, 5));
 
   document.querySelector("#opic-test").classList.add("hidden");
   const result = document.querySelector("#opic-result");

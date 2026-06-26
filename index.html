@@ -116,6 +116,21 @@
           </button>
         </header>
 
+        <section class="mobile-difficulty-card difficulty-card" aria-label="모바일 학습 난이도">
+          <div class="difficulty-heading">
+            <span>
+              <i data-lucide="gauge"></i>
+              학습 난이도
+            </span>
+            <strong id="mobile-difficulty-label">중급</strong>
+          </div>
+          <div class="difficulty-options" role="group" aria-label="모바일 학습 난이도 선택">
+            <button data-difficulty="beginner">초급</button>
+            <button class="active" data-difficulty="intermediate">중급</button>
+            <button data-difficulty="advanced">고급</button>
+          </div>
+        </section>
+
         <section class="view active" id="today-view">
           <div class="page-heading">
             <div>
@@ -974,6 +989,6 @@
     </div>
 
     <script src="https://www.youtube.com/iframe_api"></script>
-    <script src="app.js"></script>
+    <script src="app.js?v=32"></script>
   </body>
 </html>

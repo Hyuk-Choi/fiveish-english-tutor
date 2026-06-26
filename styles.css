@@ -498,6 +498,10 @@ a:focus-visible {
   display: none;
 }
 
+.mobile-difficulty-card {
+  display: none;
+}
+
 .page-heading {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
@@ -3583,6 +3587,18 @@ code {
     margin: 28px auto 0;
     padding: 18px 0 8px;
     border-top: 1px solid var(--line);
+  }
+
+  .mobile-difficulty-card {
+    display: block;
+    width: min(1180px, 100%);
+    margin: 0 auto 16px;
+    padding: 13px;
+    box-shadow: 0 12px 28px rgba(42, 39, 88, 0.08);
+  }
+
+  .mobile-difficulty-card .difficulty-heading {
+    margin-bottom: 10px;
   }
 
   .mobile-nav {
