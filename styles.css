@@ -2471,6 +2471,133 @@ a:focus-visible {
   font-size: 11px;
 }
 
+.mock-ai-panel {
+  clear: both;
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+  padding: 14px;
+  border: 1px solid rgba(7, 92, 255, 0.13);
+  border-radius: 18px;
+  background: linear-gradient(135deg, #ffffff 0%, #eef5ff 100%);
+  box-shadow: 0 12px 30px rgba(7, 92, 255, 0.07);
+}
+
+.mock-ai-panel-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mock-ai-panel-top > span {
+  display: grid;
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border-radius: 13px;
+  background: var(--primary);
+  color: #ffffff;
+}
+
+.mock-ai-panel-top svg {
+  width: 17px;
+}
+
+.mock-ai-panel-top small,
+.mock-ai-panel-top strong {
+  display: block;
+}
+
+.mock-ai-panel-top small {
+  color: var(--primary);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.9px;
+}
+
+.mock-ai-panel-top strong {
+  margin-top: 3px;
+  color: var(--ink-strong);
+  font-family: "Noto Sans KR", sans-serif;
+  font-size: 12px;
+}
+
+.mock-ai-memory {
+  margin: 0;
+  color: var(--ink);
+  font-family: "Noto Sans KR", sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.55;
+}
+
+.mock-ai-score-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.mock-ai-score-grid span {
+  padding: 8px 9px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.mock-ai-score-grid small,
+.mock-ai-score-grid strong {
+  display: block;
+}
+
+.mock-ai-score-grid small {
+  color: var(--muted);
+  font-family: "Noto Sans KR", sans-serif;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.mock-ai-score-grid strong {
+  margin-top: 2px;
+  color: var(--primary-dark);
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.mock-ai-next {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  border-radius: 14px;
+  background: #ffffff;
+}
+
+.mock-ai-next strong {
+  color: var(--ink-strong);
+  font-family: "Noto Sans KR", sans-serif;
+  font-size: 12px;
+}
+
+.mock-ai-next p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-family: "Noto Sans KR", sans-serif;
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.mock-ai-next code {
+  display: block;
+  padding: 8px 10px;
+  border-radius: 11px;
+  background: var(--coral-soft);
+  color: var(--coral-dark);
+  font-family: "Inter", sans-serif;
+  font-size: 11px;
+  font-weight: 900;
+  line-height: 1.45;
+  white-space: normal;
+}
+
 .conversation-composer {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
@@ -4299,6 +4426,22 @@ code {
     display: none;
   }
 
+  .live-status-pill {
+    min-width: 148px;
+  }
+
+  .live-status-pill > div {
+    display: block;
+  }
+
+  .live-status-pill small {
+    font-size: 8px;
+  }
+
+  .live-status-pill strong {
+    font-size: 12px;
+  }
+
   .tutor-hero {
     min-height: 0;
     grid-template-columns: 1fr;
@@ -4655,6 +4798,14 @@ code {
 
   .live-message > div {
     max-width: 82%;
+  }
+
+  .mock-ai-score-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .mock-ai-panel {
+    padding: 12px;
   }
 
   .conversation-composer {

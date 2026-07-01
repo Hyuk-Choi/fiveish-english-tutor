@@ -1986,6 +1986,8 @@ const conversationState = {
   turn: 0,
   recognition: null,
   listening: false,
+  aiSession: null,
+  lastMockAiResult: null,
 };
 
 const opicState = {
@@ -3302,17 +3304,92 @@ function appendConversationMessage(role, text) {
   renderIcons();
 }
 
+function createConversationAiSession() {
+  if (!window.FiveishMockConversationAI?.createSession) return null;
+  return window.FiveishMockConversationAI.createSession(conversationState.scenario);
+}
+
+function ensureConversationAiSession() {
+  if (
+    !conversationState.aiSession ||
+    conversationState.aiSession.scenarioId !== conversationState.scenario
+  ) {
+    conversationState.aiSession = createConversationAiSession();
+  }
+  return conversationState.aiSession;
+}
+
+function runConversationMockAi(answer) {
+  const engine = window.FiveishMockConversationAI;
+  const scenario = conversationScenarios[conversationState.scenario];
+  const session = ensureConversationAiSession();
+  conversationState.lastMockAiResult = null;
+  if (!engine?.analyzeTurn || !session || !scenario) return null;
+
+  const result = engine.analyzeTurn({
+    session,
+    scenario,
+    scenarioId: conversationState.scenario,
+    answer,
+    turnIndex: conversationState.turn,
+  });
+  conversationState.lastMockAiResult = result;
+  return result;
+}
+
+function renderConversationMockAiPanel(result) {
+  if (!result) return "";
+  const scoreLabels = {
+    context: "맥락",
+    intent: "의도",
+    flow: "흐름",
+    scenario: "상황",
+  };
+  const scoreRows = Object.entries(result.scores || {})
+    .map(
+      ([key, value]) => `
+        <span>
+          <small>${scoreLabels[key] || key}</small>
+          <strong>${value}</strong>
+        </span>
+      `,
+    )
+    .join("");
+  const memoryText = result.memorySummary || "이번 답변부터 대화 맥락을 쌓는 중입니다.";
+
+  return `
+    <div class="mock-ai-panel">
+      <div class="mock-ai-panel-top">
+        <span><i data-lucide="bot"></i></span>
+        <div>
+          <small>입력값 기반 MOCK AI</small>
+          <strong>${escapeHtml(result.intentLabel)} · 신뢰도 ${escapeHtml(result.confidence)}</strong>
+        </div>
+      </div>
+      <p class="mock-ai-memory">${escapeHtml(memoryText)}</p>
+      <div class="mock-ai-score-grid">${scoreRows}</div>
+      <div class="mock-ai-next">
+        <strong>${escapeHtml(result.coaching.headline)}</strong>
+        <p>${escapeHtml(result.coaching.nextAction)}</p>
+        <code>${escapeHtml(result.coaching.usableSentence)}</code>
+      </div>
+    </div>
+  `;
+}
+
 function resetConversation(shouldSpeak = false) {
   const scenario = conversationScenarios[conversationState.scenario];
   conversationState.turn = 0;
+  conversationState.aiSession = createConversationAiSession();
+  conversationState.lastMockAiResult = null;
   document.querySelector("#conversation-target").textContent = scenario.target;
   document.querySelector("#conversation-target-tip").textContent = scenario.targetTip;
   document.querySelector("#live-chat-log").innerHTML = "";
   document.querySelector("#conversation-input").value = "";
   document.querySelector("#turn-coaching").innerHTML = `
     <div class="coaching-empty">
-      <span><i data-lucide="sparkles"></i></span>
-      <p>영어로 답하면 자연스러움, 길이, 이어 말하기를 바로 확인해 드려요.</p>
+      <span><i data-lucide="bot"></i></span>
+      <p>Mock AI가 앞 대화의 키워드와 문제 상황을 기억해 다음 질문과 피드백에 반영해요.</p>
     </div>
   `;
   appendConversationMessage("tutor", scenario.opening);
@@ -3402,6 +3479,7 @@ function renderConversationFeedback(feedback) {
   const compactAnalysis = window.FiveishAnalysisComponents?.renderCompactResult
     ? window.FiveishAnalysisComponents.renderCompactResult(feedback.analysis)
     : "";
+  const mockAiPanel = renderConversationMockAiPanel(feedback.mockAi);
   coaching.innerHTML = `
     <div class="turn-score">
       <strong>${feedback.score}</strong>
@@ -3412,12 +3490,16 @@ function renderConversationFeedback(feedback) {
       <strong>${feedback.grammarTip}</strong>
       <p>${feedback.connectorText} · ${feedback.words} words</p>
     </div>
+    ${mockAiPanel}
     ${compactAnalysis}
   `;
   renderIcons();
 }
 
 function getConversationReply(answer) {
+  if (conversationState.lastMockAiResult?.reply) {
+    return conversationState.lastMockAiResult.reply;
+  }
   const scenario = conversationScenarios[conversationState.scenario];
   const promptIndex = Math.min(conversationState.turn, scenario.prompts.length - 1);
   const lower = answer.toLowerCase();
@@ -3446,6 +3528,8 @@ function sendConversationAnswer() {
 
   appendConversationMessage("user", answer);
   const feedback = analyzeConversationAnswer(answer);
+  const mockAiResult = runConversationMockAi(answer);
+  feedback.mockAi = mockAiResult;
   renderConversationFeedback(feedback);
   input.value = "";
   const reply = getConversationReply(answer);
