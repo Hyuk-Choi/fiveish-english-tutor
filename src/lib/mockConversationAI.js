@@ -106,6 +106,20 @@
     return patterns.some((pattern) => lower.includes(pattern));
   }
 
+  function escapeRegExp(value) {
+    return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  }
+
+  function keywordMatches(value, keyword) {
+    const normalizedKeyword = String(keyword || "").trim().toLowerCase();
+    if (!normalizedKeyword) return false;
+    if (/^[a-z0-9\s']+$/.test(normalizedKeyword)) {
+      const pattern = escapeRegExp(normalizedKeyword).replace(/\s+/g, "\\s+");
+      return new RegExp(`\\b${pattern}\\b`).test(value);
+    }
+    return value.includes(normalizedKeyword);
+  }
+
   function extractTopics(answer, scenarioId) {
     const lower = String(answer || "").toLowerCase();
     const lexicon = [
@@ -117,7 +131,7 @@
     ];
     const topics = [];
     lexicon.forEach((group) => {
-      const hit = group.find((keyword) => lower.includes(keyword));
+      const hit = group.find((keyword) => keywordMatches(lower, keyword));
       if (hit && !topics.includes(group[0])) topics.push(group[0]);
     });
     return topics.slice(0, 4);
@@ -206,9 +220,9 @@
   function buildMemorySummary(memory) {
     const parts = [];
     if (memory.topics.length) parts.push(`주제: ${memory.topics.slice(0, 3).join(", ")}`);
-    if (memory.preferences.length) parts.push(`선호: ${memory.preferences[0]}`);
-    if (memory.problems.length) parts.push(`문제: ${shorten(memory.problems[0], 54)}`);
-    if (memory.requests.length) parts.push(`요청: ${shorten(memory.requests[0], 54)}`);
+    if (memory.preferences.length) parts.push(`선호: ${memory.preferences.slice(0, 2).join(" / ")}`);
+    if (memory.problems.length) parts.push(`문제: ${memory.problems.slice(0, 2).map((item) => shorten(item, 44)).join(" / ")}`);
+    if (memory.requests.length) parts.push(`요청: ${memory.requests.slice(0, 2).map((item) => shorten(item, 44)).join(" / ")}`);
     if (memory.decisions.length) parts.push(`결정: ${shorten(memory.decisions[0], 54)}`);
     return parts.join(" · ");
   }
@@ -300,7 +314,7 @@
       return `Earlier you mentioned ${shorten(previousMemory.problems[0], 56)}, so let's keep that context in mind.`;
     }
     if (previousMemory.preferences.length) {
-      return `Earlier you said you usually ${shorten(previousMemory.preferences[0], 48)}, so this connects nicely.`;
+      return `Earlier you mentioned ${shorten(previousMemory.preferences[0], 48)}, so this connects nicely.`;
     }
     if (previousMemory.requests.length) {
       return `Since you asked about ${shorten(previousMemory.requests[0], 48)}, let's make the next answer more specific.`;
@@ -310,18 +324,29 @@
     return "";
   }
 
-  function buildContextualPrompt({ scenario, scenarioId, facts, memory, turnIndex }) {
+  function mainTopic(memory, facts) {
+    return facts.topics[0] || memory.topics[0] || "that";
+  }
+
+  function buildContextualPrompt({ scenario, scenarioId, facts, memory, previousMemory, turnIndex }) {
     if (scenarioId === "travel" && memory.problems.length) {
-      return "What solution would you like me to arrange first?";
+      const problem = shorten(memory.problems[0], 44);
+      return `For ${problem}, would you prefer a quick fix, a replacement, or another option?`;
     }
     if (scenarioId === "work" && (memory.problems.length || memory.decisions.length)) {
-      return "Given that context, what should we tell the client or team next?";
+      const focus = memory.problems[0] || memory.decisions[0] || memory.topics[0] || "this situation";
+      return `Given ${shorten(focus, 48)}, what should we tell the client or team as the next step?`;
     }
     if (scenarioId === "cafe" && (memory.requests.length || memory.topics.length)) {
-      return "Would you like to add anything else or change one option?";
+      const topic = mainTopic(memory, facts);
+      return `For the ${topic}, would you like to keep it as is, or change the size, milk, or temperature?`;
     }
     if (scenarioId === "smalltalk" && (memory.preferences.length || facts.topics.length)) {
-      return "What do you like most about that, and how often do you do it?";
+      if (previousMemory.preferences.length && facts.preferences.length) {
+        return `How are ${shorten(previousMemory.preferences[0], 34)} and ${shorten(facts.preferences[0], 34)} connected for you?`;
+      }
+      const topic = mainTopic(memory, facts);
+      return `When it comes to ${topic}, what do you like most about it, and how often do you do it?`;
     }
     const promptIndex = Math.min(turnIndex, scenario.prompts.length - 1);
     return scenario.prompts[promptIndex];
@@ -358,6 +383,10 @@
     const activeSession = session || createSession(scenarioId);
     const previousMemory = JSON.parse(JSON.stringify(activeSession.memory));
     const facts = extractFacts(answer, scenarioId);
+    const isShortContinuation = countWords(answer) <= 5;
+    if (isShortContinuation && !facts.topics.length && previousMemory.topics.length) {
+      facts.topics = previousMemory.topics.slice(0, 2);
+    }
     const intent = inferIntent(answer, facts);
     const sentiment = inferSentiment(answer);
     const scores = scoreTurn(answer, facts, previousMemory, scenarioId);
@@ -370,7 +399,7 @@
     const reply = [
       acknowledgmentFor(sentiment, intent),
       bridge,
-      buildContextualPrompt({ scenario, scenarioId, facts, memory: activeSession.memory, turnIndex }),
+      buildContextualPrompt({ scenario, scenarioId, facts, memory: activeSession.memory, previousMemory, turnIndex }),
     ]
       .filter(Boolean)
       .join(" ")

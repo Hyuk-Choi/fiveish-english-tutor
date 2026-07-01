@@ -1902,6 +1902,7 @@ const STORAGE = {
   shadowingVideoId: "fiveish-shadowing-video-id",
   difficulty: "fiveish-difficulty",
   opicHistory: "fiveish-opic-history",
+  conversationSession: "fiveish-conversation-session",
 };
 
 function readStorage(key, fallback = null) {
@@ -2722,7 +2723,7 @@ function switchView(viewName) {
   if (viewName === "saved") renderSaved();
   if (viewName === "business") renderBusinessLesson();
   if (viewName === "conversation" && !document.querySelector("#live-chat-log").children.length) {
-    resetConversation();
+    restoreConversationState();
   }
   window.scrollTo({ top: 0, behavior: "smooth" });
   renderIcons();
@@ -3309,6 +3310,85 @@ function createConversationAiSession() {
   return window.FiveishMockConversationAI.createSession(conversationState.scenario);
 }
 
+function isValidConversationSession(value) {
+  return Boolean(
+    value &&
+      typeof value === "object" &&
+      conversationScenarios[value.scenarioId] &&
+      value.memory &&
+      Array.isArray(value.history),
+  );
+}
+
+function syncConversationScenarioButtons() {
+  document.querySelectorAll("[data-conversation-scenario]").forEach((button) => {
+    button.classList.toggle("active", button.dataset.conversationScenario === conversationState.scenario);
+  });
+}
+
+function persistConversationState() {
+  if (!isValidConversationSession(conversationState.aiSession)) return;
+  const history = conversationState.aiSession.history.slice(-18);
+  const session = {
+    ...conversationState.aiSession,
+    history,
+  };
+  conversationState.aiSession.history = history;
+  writeJsonStorage(STORAGE.conversationSession, {
+    scenario: conversationState.scenario,
+    turn: conversationState.turn,
+    aiSession: session,
+    lastMockAiResult: conversationState.lastMockAiResult,
+    updatedAt: Date.now(),
+  });
+}
+
+function renderRestoredConversationCoaching() {
+  const coaching = document.querySelector("#turn-coaching");
+  const result = conversationState.lastMockAiResult || conversationState.aiSession?.lastResult;
+  const panel = renderConversationMockAiPanel(result);
+  coaching.innerHTML = panel || `
+    <div class="coaching-empty">
+      <span><i data-lucide="bot"></i></span>
+      <p>이전 대화 맥락을 복원했어요. 이어서 답하면 같은 흐름으로 코칭합니다.</p>
+    </div>
+  `;
+  renderIcons();
+}
+
+function restoreConversationState() {
+  const stored = readJsonStorage(STORAGE.conversationSession, null);
+  const scenarioId = stored?.scenario;
+  if (!conversationScenarios[scenarioId] || !isValidConversationSession(stored?.aiSession)) {
+    resetConversation();
+    return false;
+  }
+
+  const scenario = conversationScenarios[scenarioId];
+  conversationState.scenario = scenarioId;
+  conversationState.turn = Number.isFinite(stored.turn) ? stored.turn : stored.aiSession.turnCount || 0;
+  conversationState.aiSession = stored.aiSession;
+  conversationState.lastMockAiResult = stored.lastMockAiResult || stored.aiSession.lastResult || null;
+  document.querySelector("#conversation-target").textContent = scenario.target;
+  document.querySelector("#conversation-target-tip").textContent = scenario.targetTip;
+  document.querySelector("#conversation-input").value = "";
+  document.querySelector("#live-chat-log").innerHTML = "";
+  syncConversationScenarioButtons();
+
+  if (!conversationState.aiSession.history.length) {
+    appendConversationMessage("tutor", scenario.opening);
+  } else {
+    appendConversationMessage("tutor", scenario.opening);
+    conversationState.aiSession.history.forEach((message) => {
+      if (message?.role && message?.text) {
+        appendConversationMessage(message.role === "user" ? "user" : "tutor", message.text);
+      }
+    });
+  }
+  renderRestoredConversationCoaching();
+  return true;
+}
+
 function ensureConversationAiSession() {
   if (
     !conversationState.aiSession ||
@@ -3382,10 +3462,12 @@ function resetConversation(shouldSpeak = false) {
   conversationState.turn = 0;
   conversationState.aiSession = createConversationAiSession();
   conversationState.lastMockAiResult = null;
+  removeStorage(STORAGE.conversationSession);
   document.querySelector("#conversation-target").textContent = scenario.target;
   document.querySelector("#conversation-target-tip").textContent = scenario.targetTip;
   document.querySelector("#live-chat-log").innerHTML = "";
   document.querySelector("#conversation-input").value = "";
+  syncConversationScenarioButtons();
   document.querySelector("#turn-coaching").innerHTML = `
     <div class="coaching-empty">
       <span><i data-lucide="bot"></i></span>
@@ -3534,9 +3616,11 @@ function sendConversationAnswer() {
   input.value = "";
   const reply = getConversationReply(answer);
   conversationState.turn += 1;
+  persistConversationState();
 
   window.setTimeout(() => {
     appendConversationMessage("tutor", reply);
+    persistConversationState();
     speak(reply);
   }, 350);
 }
@@ -4487,7 +4571,7 @@ function init() {
   setupInstallExperience();
   bindEvents();
   setupDailyContentUpdates();
-  resetConversation();
+  restoreConversationState();
   renderIcons();
 
   if (window.YT?.Player) createYouTubePlayer();

@@ -1,9 +1,9 @@
-const CACHE_NAME = "fiveish-v38";
+const CACHE_NAME = "fiveish-v39";
 const HOME_URL = new URL("./", self.registration.scope).href;
 const APP_SHELL = [
   "./",
   "index.html",
-  "styles.css?v=38",
+  "styles.css?v=39",
   "src/data/mockKnowledgeBase.js?v=34",
   "src/data/marketingKnowledgeBase.js?v=34",
   "src/data/benchmarkData.js?v=34",
@@ -12,12 +12,12 @@ const APP_SHELL = [
   "src/lib/scoringEngine.js?v=34",
   "src/lib/recommendationEngine.js?v=34",
   "src/lib/resultGenerator.js?v=34",
-  "src/lib/mockConversationAI.js?v=38",
+  "src/lib/mockConversationAI.js?v=39",
   "src/components/ScoreBreakdown.js?v=34",
   "src/components/InsightList.js?v=34",
   "src/components/ActionPlan.js?v=34",
   "src/components/AnalysisResultCard.js?v=34",
-  "app.js?v=38",
+  "app.js?v=39",
   "manifest.webmanifest?v=36",
   "icons/favicon-32.png?v=36",
   "icons/apple-touch-icon.png?v=36",
