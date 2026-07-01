@@ -1,29 +1,29 @@
 :root {
-  --ink: #17172b;
-  --ink-strong: #0f1022;
-  --ink-soft: #5e6078;
-  --muted: #85879b;
-  --bg: #f6f7ff;
-  --bg-warm: #fff7f1;
+  --ink: #07133f;
+  --ink-strong: #020943;
+  --ink-soft: #4d5d7f;
+  --muted: #7c89a8;
+  --bg: #f4f8ff;
+  --bg-warm: #fff8ef;
   --surface: #ffffff;
-  --surface-soft: #fbfbff;
-  --line: #e4e6f2;
-  --line-strong: #d8daf0;
-  --primary: #6357ff;
-  --primary-dark: #4436d8;
-  --primary-soft: #eeecff;
-  --coral: #ff8a5c;
-  --coral-dark: #ec6f3d;
-  --coral-soft: #fff0e8;
+  --surface-soft: #f9fbff;
+  --line: #dde7f6;
+  --line-strong: #cbd8ee;
+  --primary: #075cff;
+  --primary-dark: #0040c8;
+  --primary-soft: #eaf2ff;
+  --coral: #ff8500;
+  --coral-dark: #e96f00;
+  --coral-soft: #fff2e2;
   --mint: #14c6ad;
   --mint-soft: #e8faf6;
   --success: #19a873;
   --success-soft: #eaf8f2;
   --danger: #e75462;
   --danger-soft: #fff0f2;
-  --shadow-sm: 0 10px 24px rgba(42, 39, 88, 0.08);
-  --shadow: 0 22px 54px rgba(42, 39, 88, 0.12);
-  --shadow-primary: 0 18px 42px rgba(99, 87, 255, 0.28);
+  --shadow-sm: 0 10px 24px rgba(5, 32, 86, 0.08);
+  --shadow: 0 22px 54px rgba(5, 32, 86, 0.12);
+  --shadow-primary: 0 18px 42px rgba(7, 92, 255, 0.28);
   --radius-xl: 34px;
   --radius-lg: 26px;
   --radius-md: 18px;
@@ -42,8 +42,8 @@ body {
   margin: 0;
   min-width: 320px;
   background:
-    radial-gradient(circle at top left, rgba(99, 87, 255, 0.16), transparent 34vw),
-    linear-gradient(180deg, #fbfbff 0%, var(--bg) 42%, #f1f3ff 100%);
+    radial-gradient(circle at top left, rgba(7, 92, 255, 0.14), transparent 34vw),
+    linear-gradient(180deg, #ffffff 0%, var(--bg) 44%, #ecf4ff 100%);
   color: var(--ink);
   font-family: "DM Sans", "Noto Sans KR", sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -73,7 +73,7 @@ button:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
 a:focus-visible {
-  outline: 3px solid rgba(99, 87, 255, 0.22);
+  outline: 3px solid rgba(7, 92, 255, 0.22);
   outline-offset: 3px;
 }
 
@@ -95,7 +95,7 @@ a:focus-visible {
   padding: 28px 20px 22px;
   border-right: 1px solid rgba(216, 218, 240, 0.78);
   background: rgba(255, 255, 255, 0.88);
-  box-shadow: 10px 0 36px rgba(30, 28, 78, 0.04);
+  box-shadow: 10px 0 36px rgba(5, 32, 86, 0.04);
   backdrop-filter: blur(18px);
 }
 
@@ -175,7 +175,7 @@ a:focus-visible {
 }
 
 .nav-item.active {
-  background: linear-gradient(135deg, var(--primary) 0%, #7c65ff 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, #2f7cff 100%);
   color: #ffffff;
   box-shadow: var(--shadow-primary);
 }
@@ -204,7 +204,7 @@ a:focus-visible {
 
 .difficulty-card {
   padding: 15px;
-  background: linear-gradient(180deg, #ffffff 0%, #f7f6ff 100%);
+  background: linear-gradient(180deg, #ffffff 0%, #f4f8ff 100%);
 }
 
 .difficulty-heading {
@@ -241,7 +241,7 @@ a:focus-visible {
   gap: 5px;
   padding: 4px;
   border-radius: 13px;
-  background: #e9e7ff;
+  background: #e7f0ff;
 }
 
 .difficulty-options button {
@@ -260,7 +260,7 @@ a:focus-visible {
 .difficulty-options button.active {
   background: var(--surface);
   color: var(--primary-dark);
-  box-shadow: 0 7px 16px rgba(48, 43, 118, 0.12);
+  box-shadow: 0 7px 16px rgba(5, 32, 86, 0.12);
 }
 
 .weekly-card {
@@ -329,7 +329,7 @@ a:focus-visible {
 }
 
 .week-day.today i {
-  border: 5px solid #dedbff;
+  border: 5px solid #cfe0ff;
   background: var(--primary);
 }
 
@@ -354,7 +354,7 @@ a:focus-visible {
 }
 
 .install-app-button:hover {
-  border-color: rgba(99, 87, 255, 0.45);
+  border-color: rgba(7, 92, 255, 0.45);
   transform: translateY(-1px);
   box-shadow: var(--shadow);
 }
@@ -649,7 +649,7 @@ a:focus-visible {
   border-radius: var(--radius-xl);
   background:
     radial-gradient(circle at 84% 18%, rgba(255, 255, 255, 0.26), transparent 28%),
-    linear-gradient(135deg, #5a4dff 0%, #7461ff 52%, #8d6dff 100%);
+    linear-gradient(135deg, #075cff 0%, #1468ff 52%, #4f8cff 100%);
   color: #ffffff;
   box-shadow: var(--shadow-primary);
 }
@@ -672,10 +672,10 @@ a:focus-visible {
 .tutor-hero::after {
   top: 32px;
   right: 250px;
-  width: 78px;
-  height: 78px;
-  background: rgba(255, 138, 92, 0.42);
-  filter: blur(2px);
+  width: 68px;
+  height: 68px;
+  background: var(--coral);
+  box-shadow: 0 16px 34px rgba(255, 133, 0, 0.28);
 }
 
 .tutor-hero-copy {
@@ -713,7 +713,7 @@ a:focus-visible {
 }
 
 .tutor-hero h2 strong {
-  color: #fff0cf;
+  color: #fff1d8;
 }
 
 .tutor-hero p {
@@ -748,7 +748,7 @@ a:focus-visible {
   border: 0;
   background: var(--coral);
   color: #ffffff;
-  box-shadow: 0 16px 34px rgba(236, 111, 61, 0.32);
+  box-shadow: 0 16px 34px rgba(233, 111, 0, 0.32);
 }
 
 .tutor-start-button:hover,
@@ -797,7 +797,7 @@ a:focus-visible {
   border-radius: 32px;
   background: #ffffff;
   color: var(--primary);
-  box-shadow: 0 18px 50px rgba(30, 24, 90, 0.24);
+  box-shadow: 0 18px 50px rgba(5, 32, 86, 0.24);
 }
 
 .mic-core svg {
@@ -908,7 +908,7 @@ a:focus-visible {
   grid-template-columns: 240px minmax(0, 1fr);
   gap: 20px;
   align-items: center;
-  background: linear-gradient(135deg, #ffffff 0%, #f7f6ff 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #f4f8ff 100%);
 }
 
 .daily-quest-board h2,
@@ -1003,7 +1003,7 @@ a:focus-visible {
 }
 
 .map-node:hover {
-  border-color: rgba(99, 87, 255, 0.4);
+  border-color: rgba(7, 92, 255, 0.4);
   transform: translateY(-2px);
   box-shadow: var(--shadow-sm);
 }
@@ -1020,8 +1020,8 @@ a:focus-visible {
 }
 
 .map-node.current {
-  border-color: rgba(99, 87, 255, 0.32);
-  background: #f6f4ff;
+  border-color: rgba(7, 92, 255, 0.32);
+  background: #eef5ff;
 }
 
 .map-node.boss span {
@@ -1188,7 +1188,7 @@ a:focus-visible {
 }
 
 .lesson-item.active {
-  border-color: rgba(99, 87, 255, 0.28);
+  border-color: rgba(7, 92, 255, 0.28);
   background: var(--primary-soft);
 }
 
@@ -1323,7 +1323,7 @@ a:focus-visible {
 }
 
 .icon-button:hover {
-  border-color: rgba(99, 87, 255, 0.35);
+  border-color: rgba(7, 92, 255, 0.35);
   background: var(--primary-soft);
   color: var(--primary);
   transform: translateY(-1px);
@@ -1335,7 +1335,7 @@ a:focus-visible {
 
 .bookmark-button.saved,
 .icon-button.saved {
-  border-color: rgba(255, 138, 92, 0.34);
+  border-color: rgba(255, 133, 0, 0.34);
   background: var(--coral-soft);
   color: var(--coral-dark);
 }
@@ -1395,7 +1395,7 @@ a:focus-visible {
 }
 
 .listen-button:hover {
-  border-color: rgba(99, 87, 255, 0.35);
+  border-color: rgba(7, 92, 255, 0.35);
   background: var(--primary-soft);
 }
 
@@ -1542,9 +1542,9 @@ a:focus-visible {
 
 .primary-button {
   border: 1px solid var(--primary);
-  background: linear-gradient(135deg, var(--primary) 0%, #7d68ff 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, #2f7cff 100%);
   color: #ffffff;
-  box-shadow: 0 14px 30px rgba(99, 87, 255, 0.22);
+  box-shadow: 0 14px 30px rgba(7, 92, 255, 0.22);
 }
 
 .primary-button.completed {
@@ -1561,7 +1561,7 @@ a:focus-visible {
 }
 
 .secondary-button:hover {
-  border-color: rgba(99, 87, 255, 0.35);
+  border-color: rgba(7, 92, 255, 0.35);
   background: var(--primary-soft);
   color: var(--primary-dark);
   transform: translateY(-1px);
@@ -1652,7 +1652,7 @@ a:focus-visible {
   display: inline-block;
   min-width: 96px;
   margin: 0 4px;
-  border-bottom: 3px solid rgba(99, 87, 255, 0.28);
+  border-bottom: 3px solid rgba(7, 92, 255, 0.28);
   color: var(--primary-dark);
   text-align: center;
 }
@@ -1676,7 +1676,7 @@ a:focus-visible {
 }
 
 .quiz-option:hover:not(:disabled) {
-  border-color: rgba(99, 87, 255, 0.42);
+  border-color: rgba(7, 92, 255, 0.42);
   background: var(--primary-soft);
   color: var(--primary-dark);
 }
@@ -1808,7 +1808,7 @@ a:focus-visible {
 .video-frame {
   position: relative;
   aspect-ratio: 16 / 9;
-  background: #111226;
+  background: #020943;
 }
 
 #youtube-player,
@@ -1825,7 +1825,7 @@ a:focus-visible {
   justify-content: center;
   flex-direction: column;
   gap: 10px;
-  background: radial-gradient(circle at top, #302b74, #111226 70%);
+  background: radial-gradient(circle at top, #06154f, #020943 70%);
   color: #eef0ff;
   font-size: 13px;
 }
@@ -1906,7 +1906,7 @@ a:focus-visible {
   height: 48px;
   background: var(--primary);
   color: #ffffff;
-  box-shadow: 0 14px 28px rgba(99, 87, 255, 0.22);
+  box-shadow: 0 14px 28px rgba(7, 92, 255, 0.22);
 }
 
 .play-button svg {
@@ -2151,7 +2151,7 @@ a:focus-visible {
 
 .scenario-button:hover,
 .scenario-button.active {
-  border-color: rgba(99, 87, 255, 0.25);
+  border-color: rgba(7, 92, 255, 0.25);
   background: var(--primary-soft);
 }
 
@@ -2192,7 +2192,7 @@ a:focus-visible {
   margin-top: 16px;
   padding: 15px;
   border-radius: 20px;
-  background: linear-gradient(135deg, var(--primary), #7d68ff);
+  background: linear-gradient(135deg, var(--primary), #2f7cff);
   color: #ffffff;
 }
 
@@ -2260,7 +2260,7 @@ a:focus-visible {
   height: 42px;
   place-items: center;
   border-radius: 16px;
-  background: linear-gradient(135deg, var(--primary), #8b72ff);
+  background: linear-gradient(135deg, var(--primary), #3f86ff);
   color: #ffffff;
   font-weight: 900;
 }
@@ -2341,7 +2341,7 @@ a:focus-visible {
 }
 
 .live-message.user > div {
-  border-color: rgba(99, 87, 255, 0.28);
+  border-color: rgba(7, 92, 255, 0.28);
   border-radius: 18px 18px 6px 18px;
   background: var(--primary);
   color: #ffffff;
@@ -2543,8 +2543,8 @@ a:focus-visible {
 .conversation-input-wrap textarea:focus,
 #opic-answer:focus,
 #script-editor:focus {
-  border-color: rgba(99, 87, 255, 0.48);
-  box-shadow: 0 0 0 4px rgba(99, 87, 255, 0.08);
+  border-color: rgba(7, 92, 255, 0.48);
+  box-shadow: 0 0 0 4px rgba(7, 92, 255, 0.08);
 }
 
 .conversation-input-wrap small {
@@ -2568,11 +2568,11 @@ a:focus-visible {
   align-items: center;
   padding: 22px;
   border-radius: 24px;
-  background: linear-gradient(135deg, #f8f7ff 0%, #ffffff 100%);
+  background: linear-gradient(135deg, #f4f8ff 0%, #ffffff 100%);
 }
 
 .opic-avatar {
-  background: linear-gradient(135deg, var(--coral), #ffac70);
+  background: linear-gradient(135deg, var(--coral), #ffab45);
 }
 
 .opic-setup-intro h2 {
@@ -2673,10 +2673,10 @@ a:focus-visible {
 
 .opic-topic-grid input:checked + span,
 .opic-level-options input:checked + span {
-  border-color: rgba(99, 87, 255, 0.42);
+  border-color: rgba(7, 92, 255, 0.42);
   background: var(--primary-soft);
   color: var(--primary-dark);
-  box-shadow: inset 0 0 0 1px rgba(99, 87, 255, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(7, 92, 255, 0.08);
 }
 
 .opic-level-options {
@@ -2882,7 +2882,7 @@ a:focus-visible {
   height: 104px;
   border-radius: 32px;
   font-size: 40px;
-  box-shadow: 0 18px 36px rgba(255, 138, 92, 0.22);
+  box-shadow: 0 18px 36px rgba(255, 133, 0, 0.22);
 }
 
 .ava-stage small {
@@ -2924,7 +2924,7 @@ a:focus-visible {
 }
 
 .opic-hint-toggle.active {
-  border-color: rgba(99, 87, 255, 0.35);
+  border-color: rgba(7, 92, 255, 0.35);
   background: var(--primary-soft);
   color: var(--primary-dark);
 }
@@ -3238,10 +3238,10 @@ a:focus-visible {
 .analysis-result-card,
 .analysis-compact-card {
   margin-top: 20px;
-  border: 1px solid rgba(99, 87, 255, 0.14);
+  border: 1px solid rgba(7, 92, 255, 0.14);
   border-radius: 28px;
   background:
-    radial-gradient(circle at top right, rgba(255, 138, 92, 0.12), transparent 32%),
+    radial-gradient(circle at top right, rgba(255, 133, 0, 0.12), transparent 32%),
     linear-gradient(180deg, #ffffff 0%, #f8f8ff 100%);
   box-shadow: var(--shadow-sm);
 }
@@ -3419,7 +3419,7 @@ a:focus-visible {
 .analysis-benchmark {
   margin-top: 18px;
   padding: 18px;
-  border: 1px dashed rgba(99, 87, 255, 0.28);
+  border: 1px dashed rgba(7, 92, 255, 0.28);
   border-radius: 20px;
   background: rgba(238, 236, 255, 0.44);
 }
@@ -3809,7 +3809,7 @@ a:focus-visible {
 }
 
 .marketing-channel-grid input:checked + span {
-  border-color: rgba(99, 87, 255, 0.34);
+  border-color: rgba(7, 92, 255, 0.34);
   background: var(--primary-soft);
   color: var(--primary-dark);
 }
@@ -4215,7 +4215,7 @@ code {
     width: min(1180px, 100%);
     margin: 0 auto 16px;
     padding: 13px;
-    box-shadow: 0 12px 28px rgba(42, 39, 88, 0.08);
+    box-shadow: 0 12px 28px rgba(5, 32, 86, 0.08);
   }
 
   .mobile-difficulty-card .difficulty-heading {
@@ -4232,7 +4232,7 @@ code {
     padding: 8px 8px max(8px, env(safe-area-inset-bottom));
     border-top: 1px solid rgba(216, 218, 240, 0.9);
     background: rgba(255, 255, 255, 0.94);
-    box-shadow: 0 -12px 30px rgba(30, 28, 78, 0.08);
+    box-shadow: 0 -12px 30px rgba(5, 32, 86, 0.08);
     backdrop-filter: blur(16px);
   }
 
