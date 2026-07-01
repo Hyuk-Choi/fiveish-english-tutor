@@ -1992,6 +1992,7 @@ const opicState = {
   questions: [],
   currentIndex: 0,
   answers: [],
+  topicIds: [],
   level: "intermediate",
   coaching: true,
   secondsLeft: 40 * 60,
@@ -2002,6 +2003,14 @@ const opicState = {
   replayCount: 0,
   recognition: null,
   listening: false,
+  analysisVariant: 0,
+  lastResultPayload: null,
+};
+
+const marketingAnalysisState = {
+  variant: 0,
+  lastInput: null,
+  lastResult: null,
 };
 
 const opicLevelRubrics = {
@@ -3160,6 +3169,103 @@ function countEnglishWords(value) {
   return (value.trim().match(/[A-Za-z]+(?:['’-][A-Za-z]+)*/g) || []).length;
 }
 
+function averageNumber(values) {
+  const filtered = values.filter((value) => Number.isFinite(value));
+  if (!filtered.length) return 0;
+  return filtered.reduce((sum, value) => sum + value, 0) / filtered.length;
+}
+
+function generateLearningAnalysis(input) {
+  if (window.FiveishAnalysisEngine?.generate) {
+    return window.FiveishAnalysisEngine.generate(input);
+  }
+
+  const totalScore = Math.round(input.baseScore || input.average || 60);
+  return {
+    summary: "입력값과 내부 기준값을 비교해 학습 방향을 정리했습니다.",
+    totalScore,
+    confidenceLevel: totalScore >= 75 ? "높음" : totalScore >= 55 ? "보통" : "낮음",
+    inputCompleteness: totalScore,
+    reasoningSummary:
+      "외부 API 호출 없이 브라우저 안의 기본 분석 로직으로 답변 길이와 점수를 비교했습니다.",
+    benchmarkRange: { label: "기본 참고 기준", note: "내부 기준값" },
+    scores: {
+      marketFit: totalScore,
+      targetFit: totalScore,
+      messageClarity: totalScore,
+      conversionPotential: totalScore,
+      budgetEfficiency: 80,
+      executionDifficulty: totalScore,
+      improvementPriority: Math.max(0, 100 - totalScore),
+    },
+    scoreLabels: {
+      marketFit: "상황 적합도",
+      targetFit: "목표 적합도",
+      messageClarity: "메시지 명확도",
+      conversionPotential: "실전 전환 가능성",
+      budgetEfficiency: "연습 효율성",
+      executionDifficulty: "실행 난이도 관리",
+      improvementPriority: "개선 우선순위",
+    },
+    keyInsights: ["기본 점수와 답변 길이를 기준으로 학습 방향을 계산했습니다."],
+    problems: ["세부 분석 모듈을 불러오지 못해 기본 결과만 표시합니다."],
+    recommendations: ["답변에 이유와 예시를 한 문장씩 추가해 다시 시도하세요."],
+    priorityActions: [{ priority: "중간", action: "because 문장 하나 추가", reason: "답변 근거 강화" }],
+    generatedCopy: ["The main reason is that it helps me explain my idea clearly."],
+    nextTestIdeas: ["같은 답변을 한 문장 더 길게 만들어 비교하세요."],
+    caution: "이 결과는 학습용 참고 결과이며 공식 평가가 아닙니다.",
+  };
+}
+
+function getAnalysisPlainText(result) {
+  if (window.FiveishAnalysisEngine?.createPlainText) {
+    return window.FiveishAnalysisEngine.createPlainText(result);
+  }
+  return `${result.summary}\nScore: ${result.totalScore}`;
+}
+
+function downloadTextFile(filename, content) {
+  const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
+function printAnalysisResult(result) {
+  const printWindow = window.open("", "_blank", "width=900,height=720");
+  if (!printWindow) {
+    showToast("팝업이 차단되어 PDF 저장 창을 열 수 없어요.");
+    return;
+  }
+  const content = escapeHtml(getAnalysisPlainText(result)).replaceAll("\n", "<br>");
+  printWindow.document.write(`
+    <!doctype html>
+    <html lang="ko">
+      <head>
+        <meta charset="utf-8">
+        <title>Fiveish Analysis Result</title>
+        <style>
+          body { margin: 40px; color: #111827; font-family: -apple-system, BlinkMacSystemFont, "Noto Sans KR", sans-serif; line-height: 1.65; }
+          h1 { margin: 0 0 18px; font-size: 26px; }
+          .box { padding: 24px; border: 1px solid #d8deef; border-radius: 20px; background: #f8faff; }
+        </style>
+      </head>
+      <body>
+        <h1>Fiveish AI 분석형 결과</h1>
+        <div class="box">${content}</div>
+      </body>
+    </html>
+  `);
+  printWindow.document.close();
+  printWindow.focus();
+  window.setTimeout(() => printWindow.print(), 250);
+}
+
 function getSpeechRecognition() {
   return window.SpeechRecognition || window.webkitSpeechRecognition || null;
 }
@@ -3265,6 +3371,20 @@ function analyzeConversationAnswer(answer) {
     grammarTip = "문장 흐름이 좋아요. 다음에는 구체적인 예시 하나를 덧붙여보세요.";
   }
 
+  const analysis = generateLearningAnalysis({
+    mode: "conversation",
+    contextId: conversationState.scenario,
+    targetExpression: conversationScenarios[conversationState.scenario].target,
+    targetUsed,
+    answerText: answer,
+    wordCount: words,
+    connectorsCount: connectors.length,
+    naturalMarkersCount: naturalMarkers.length,
+    baseScore: score,
+    variant: conversationState.turn,
+    seed: `${state.todayKey}:${conversationState.scenario}:${answer}`,
+  });
+
   return {
     words,
     score,
@@ -3273,11 +3393,15 @@ function analyzeConversationAnswer(answer) {
     connectorText: connectors.length
       ? `${connectors.slice(0, 3).join(", ")}로 문장을 잘 연결했어요.`
       : 'because, so, but 중 하나로 이유나 반전을 연결해보세요.',
+    analysis,
   };
 }
 
 function renderConversationFeedback(feedback) {
   const coaching = document.querySelector("#turn-coaching");
+  const compactAnalysis = window.FiveishAnalysisComponents?.renderCompactResult
+    ? window.FiveishAnalysisComponents.renderCompactResult(feedback.analysis)
+    : "";
   coaching.innerHTML = `
     <div class="turn-score">
       <strong>${feedback.score}</strong>
@@ -3288,7 +3412,9 @@ function renderConversationFeedback(feedback) {
       <strong>${feedback.grammarTip}</strong>
       <p>${feedback.connectorText} · ${feedback.words} words</p>
     </div>
+    ${compactAnalysis}
   `;
+  renderIcons();
 }
 
 function getConversationReply(answer) {
@@ -3389,6 +3515,81 @@ function toggleConversationRecognition() {
 
   conversationState.recognition = recognition;
   recognition.start();
+}
+
+function getSelectedMarketingChannels() {
+  return [...document.querySelectorAll('input[name="marketing-channel"]:checked')].map(
+    (input) => input.value,
+  );
+}
+
+function collectMarketingAnalysisInput() {
+  return {
+    mode: "marketing",
+    goal: document.querySelector("#marketing-goal")?.value || "",
+    industry: document.querySelector("#marketing-industry")?.value || "",
+    budget: document.querySelector("#marketing-budget")?.value || "",
+    targetText: document.querySelector("#marketing-target")?.value.trim() || "",
+    channels: getSelectedMarketingChannels(),
+    problemText: document.querySelector("#marketing-problem")?.value.trim() || "",
+    offerText: document.querySelector("#marketing-offer")?.value.trim() || "",
+    variant: marketingAnalysisState.variant,
+    seed: state.todayKey,
+  };
+}
+
+function bindMarketingAnalysisActions(result) {
+  const idPrefix = "marketing-analysis";
+  document.querySelector(`#${idPrefix}-regenerate`)?.addEventListener("click", () => {
+    if (!marketingAnalysisState.lastInput) return;
+    marketingAnalysisState.variant += 1;
+    renderMarketingAnalysisResult({
+      ...marketingAnalysisState.lastInput,
+      variant: marketingAnalysisState.variant,
+    });
+    showToast("핵심 판단은 유지하고 다른 표현 버전으로 바꿨어요.");
+  });
+  document.querySelector(`#${idPrefix}-copy`)?.addEventListener("click", async () => {
+    const text = getAnalysisPlainText(result);
+    try {
+      await navigator.clipboard.writeText(text);
+      showToast("분석 결과를 클립보드에 복사했어요.");
+    } catch {
+      downloadTextFile(`fiveish-marketing-analysis-${state.todayKey}.txt`, text);
+      showToast("복사가 제한되어 텍스트 파일로 저장했어요.");
+    }
+  });
+  document.querySelector(`#${idPrefix}-download`)?.addEventListener("click", () => {
+    downloadTextFile(
+      `fiveish-marketing-analysis-${state.todayKey}.txt`,
+      getAnalysisPlainText(result),
+    );
+    showToast("분석 결과 텍스트 파일을 만들었어요.");
+  });
+  document.querySelector(`#${idPrefix}-print`)?.addEventListener("click", () => {
+    printAnalysisResult(result);
+  });
+}
+
+function renderMarketingAnalysisResult(input) {
+  const result = generateLearningAnalysis(input);
+  marketingAnalysisState.lastInput = { ...input };
+  marketingAnalysisState.lastResult = result;
+  const container = document.querySelector("#marketing-analysis-result");
+  const resultCard = window.FiveishAnalysisComponents?.renderResultCard
+    ? window.FiveishAnalysisComponents.renderResultCard(result, { idPrefix: "marketing-analysis" })
+    : `<pre>${escapeHtml(JSON.stringify(result, null, 2))}</pre>`;
+  container.innerHTML = resultCard;
+  bindMarketingAnalysisActions(result);
+  renderIcons();
+  container.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function submitMarketingAnalysis(event) {
+  event.preventDefault();
+  marketingAnalysisState.variant = 0;
+  const input = collectMarketingAnalysisInput();
+  renderMarketingAnalysisResult(input);
 }
 
 function getSelectedOpicTopics() {
@@ -3509,9 +3710,12 @@ function startOpicTest() {
   opicState.level =
     document.querySelector('input[name="opic-level"]:checked')?.value || "intermediate";
   opicState.coaching = document.querySelector("#opic-coaching-mode").checked;
+  opicState.topicIds = topics;
   opicState.questions = buildOpicQuestions(topics, opicState.level);
   opicState.currentIndex = 0;
   opicState.answers = [];
+  opicState.analysisVariant = 0;
+  opicState.lastResultPayload = null;
   opicState.secondsLeft = 40 * 60;
   document.querySelector("#opic-setup").classList.add("hidden");
   document.querySelector("#opic-result").classList.add("hidden");
@@ -3657,6 +3861,12 @@ function evaluateOpicAnswer(answer, question, duration) {
       detail: Math.round(detail),
       naturalness: Math.round(naturalness),
     },
+    signals: {
+      keywordHits,
+      connectors: connectors.length,
+      details,
+      discourseMarkers: discourseMarkers.length,
+    },
     levelLabel: rubric.label,
     targetRange: rubric.range,
     targetDiagnosis,
@@ -3753,37 +3963,82 @@ function getOpicRange(score, level = opicState.level) {
   return ranges.find(([minimum]) => score >= minimum)?.[1] || "NL ~ IL";
 }
 
-function finishOpicTest() {
-  clearInterval(opicState.timer);
-  clearInterval(opicState.answerTimer);
-  stopOpicRecognition();
-  window.speechSynthesis?.cancel();
-  const rubric = opicLevelRubrics[opicState.level] || opicLevelRubrics.intermediate;
-  const answers = opicState.answers;
-  const average = answers.length
-    ? Math.round(answers.reduce((sum, answer) => sum + answer.total, 0) / answers.length)
-    : 0;
-  const metricNames = ["task", "structure", "detail", "naturalness"];
-  const metricAverages = Object.fromEntries(
-    metricNames.map((name) => [
-      name,
-      answers.length
-        ? Math.round(
-            answers.reduce((sum, answer) => sum + answer.metrics[name], 0) / answers.length,
-          )
-        : 0,
-    ]),
+function buildOpicAnalysisInput(payload, variant = opicState.analysisVariant) {
+  const answers = payload.answers || [];
+  const averageWords = averageNumber(answers.map((answer) => answer.words));
+  const averageConnectors = averageNumber(
+    answers.map((answer) => answer.signals?.connectors || 0),
   );
-  const range = getOpicRange(average, opicState.level);
-  const history = readJsonArrayStorage(STORAGE.opicHistory);
-  history.unshift({
-    date: localDateKey(),
-    average,
-    range,
-    target: rubric.label,
-    answered: answers.length,
+  const averageDetails = averageNumber(answers.map((answer) => answer.signals?.details || 0));
+  const problemQuestionCount = answers.filter((answer) =>
+    /PROBLEM|SITUATION/i.test(answer.question?.type || ""),
+  ).length;
+  const roleplayQuestionCount = answers.filter((answer) =>
+    /ROLE PLAY/i.test(answer.question?.type || ""),
+  ).length;
+
+  return {
+    mode: "opic",
+    contextId: "opic",
+    targetLevel: payload.level,
+    targetLevelLabel: payload.rubric.label,
+    targetRange: payload.rubric.range,
+    targetWords: payload.rubric.targetWords,
+    connectorMinimum: payload.rubric.connectorMinimum,
+    detailMinimum: payload.rubric.detailMinimum,
+    answeredCount: answers.length,
+    questionCount: payload.questionCount,
+    topicCount: payload.topicIds.length,
+    topicIds: payload.topicIds,
+    average: payload.average,
+    metrics: payload.metricAverages,
+    averageWords,
+    averageConnectors,
+    averageDetails,
+    problemQuestionCount,
+    roleplayQuestionCount,
+    variant,
+    seed: `${state.todayKey}:${payload.level}:${answers.map((answer) => answer.total).join("-")}`,
+  };
+}
+
+function bindOpicAnalysisActions(analysis) {
+  const idPrefix = "opic-analysis";
+  document.querySelector(`#${idPrefix}-regenerate`)?.addEventListener("click", () => {
+    opicState.analysisVariant += 1;
+    renderOpicFinalResult(opicState.lastResultPayload);
+    showToast("핵심 판단은 유지하고 다른 표현 버전으로 바꿨어요.");
   });
-  writeJsonStorage(STORAGE.opicHistory, history.slice(0, 5));
+  document.querySelector(`#${idPrefix}-copy`)?.addEventListener("click", async () => {
+    const text = getAnalysisPlainText(analysis);
+    try {
+      await navigator.clipboard.writeText(text);
+      showToast("분석 결과를 클립보드에 복사했어요.");
+    } catch {
+      downloadTextFile(`fiveish-analysis-${state.todayKey}.txt`, text);
+      showToast("복사가 제한되어 텍스트 파일로 저장했어요.");
+    }
+  });
+  document.querySelector(`#${idPrefix}-download`)?.addEventListener("click", () => {
+    downloadTextFile(
+      `fiveish-analysis-${state.todayKey}-${opicState.level}.txt`,
+      getAnalysisPlainText(analysis),
+    );
+    showToast("분석 결과 텍스트 파일을 만들었어요.");
+  });
+  document.querySelector(`#${idPrefix}-print`)?.addEventListener("click", () => {
+    printAnalysisResult(analysis);
+  });
+}
+
+function renderOpicFinalResult(payload) {
+  if (!payload) return;
+  opicState.lastResultPayload = payload;
+  const { rubric, answers, average, metricAverages, range } = payload;
+  const analysis = generateLearningAnalysis(buildOpicAnalysisInput(payload));
+  const analysisCard = window.FiveishAnalysisComponents?.renderResultCard
+    ? window.FiveishAnalysisComponents.renderResultCard(analysis, { idPrefix: "opic-analysis" })
+    : "";
 
   document.querySelector("#opic-test").classList.add("hidden");
   const result = document.querySelector("#opic-result");
@@ -3800,6 +4055,7 @@ function finishOpicTest() {
         <p>${answers.length}개 답변을 ${rubric.targetWords}단어 목표와 ${escapeHtml(rubric.range)} 루브릭 기준으로 분석했어요. 공식 등급이 아닌 학습 방향을 잡기 위한 참고 결과입니다.</p>
       </div>
     </div>
+    ${analysisCard}
     <div class="opic-result-metrics">
       ${[
         ["task", "과업 수행"],
@@ -3849,6 +4105,7 @@ function finishOpicTest() {
     </div>
   `;
   renderIcons();
+  bindOpicAnalysisActions(analysis);
   document.querySelector("#restart-opic-test").addEventListener("click", resetOpicTest);
   document.querySelector("#review-opic-answers").addEventListener("click", () => {
     document.querySelector("#opic-answer-review").classList.toggle("hidden");
@@ -3856,10 +4113,56 @@ function finishOpicTest() {
   result.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
+function finishOpicTest() {
+  clearInterval(opicState.timer);
+  clearInterval(opicState.answerTimer);
+  stopOpicRecognition();
+  window.speechSynthesis?.cancel();
+  const rubric = opicLevelRubrics[opicState.level] || opicLevelRubrics.intermediate;
+  const answers = opicState.answers;
+  const average = answers.length
+    ? Math.round(answers.reduce((sum, answer) => sum + answer.total, 0) / answers.length)
+    : 0;
+  const metricNames = ["task", "structure", "detail", "naturalness"];
+  const metricAverages = Object.fromEntries(
+    metricNames.map((name) => [
+      name,
+      answers.length
+        ? Math.round(
+            answers.reduce((sum, answer) => sum + answer.metrics[name], 0) / answers.length,
+          )
+        : 0,
+    ]),
+  );
+  const range = getOpicRange(average, opicState.level);
+  const history = readJsonArrayStorage(STORAGE.opicHistory);
+  history.unshift({
+    date: localDateKey(),
+    average,
+    range,
+    target: rubric.label,
+    answered: answers.length,
+  });
+  writeJsonStorage(STORAGE.opicHistory, history.slice(0, 5));
+
+  renderOpicFinalResult({
+    rubric,
+    answers,
+    average,
+    metricAverages,
+    range,
+    level: opicState.level,
+    topicIds: [...opicState.topicIds],
+    questionCount: opicState.questions.length,
+  });
+}
+
 function resetOpicTest() {
   clearInterval(opicState.timer);
   clearInterval(opicState.answerTimer);
   stopOpicRecognition();
+  opicState.analysisVariant = 0;
+  opicState.lastResultPayload = null;
   document.querySelector("#opic-test").classList.add("hidden");
   document.querySelector("#opic-result").classList.add("hidden");
   document.querySelector("#opic-setup").classList.remove("hidden");
@@ -3982,6 +4285,9 @@ function bindEvents() {
   });
   document.querySelector("#opic-record-button").addEventListener("click", toggleOpicRecognition);
   document.querySelector("#opic-submit-answer").addEventListener("click", submitOpicAnswer);
+  document
+    .querySelector("#marketing-analysis-form")
+    .addEventListener("submit", submitMarketingAnalysis);
   document.querySelector("#start-speaking").addEventListener("click", () => {
     document
       .querySelector("#lesson-card")
@@ -4104,7 +4410,7 @@ function init() {
 
   const requestedView = new URLSearchParams(window.location.search).get("view");
   if (
-    ["today", "business", "shadowing", "conversation", "opic", "saved"].includes(
+    ["today", "business", "shadowing", "conversation", "opic", "analysis", "saved"].includes(
       requestedView,
     )
   ) {

@@ -12,23 +12,24 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="Fiveish" />
     <title>Fiveish - 매일 5문장 영어</title>
-    <link rel="manifest" href="manifest.webmanifest" />
-    <link rel="icon" href="icons/icon-192.png?v=31" type="image/png" />
-    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=31" />
+    <link rel="manifest" href="manifest.webmanifest?v=36" />
+    <link rel="icon" href="icons/favicon-32.png?v=36" sizes="32x32" type="image/png" />
+    <link rel="icon" href="icons/icon-192.png?v=36" sizes="192x192" type="image/png" />
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=36" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=30" />
+    <link rel="stylesheet" href="styles.css?v=34" />
     <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
   </head>
   <body>
     <div class="app-shell">
       <aside class="sidebar">
         <a class="brand" href="#" aria-label="Fiveish 홈">
-          <span class="brand-mark"><img src="icons/icon-192.png?v=31" alt="" /></span>
+          <span class="brand-mark"><img src="icons/icon-192.png?v=36" alt="" /></span>
           <span>
             <strong>fiveish</strong>
             <small>real english, daily.</small>
@@ -55,6 +56,10 @@
           <button class="nav-item" data-view="opic">
             <i data-lucide="badge-check"></i>
             <span>OPIc 모의고사</span>
+          </button>
+          <button class="nav-item" data-view="analysis">
+            <i data-lucide="chart-no-axes-combined"></i>
+            <span>전략 분석</span>
           </button>
           <button class="nav-item" data-view="saved">
             <i data-lucide="bookmark"></i>
@@ -108,7 +113,7 @@
       <main class="main-content">
         <header class="mobile-header">
           <a class="brand" href="#">
-            <span class="brand-mark"><img src="icons/icon-192.png?v=31" alt="" /></span>
+            <span class="brand-mark"><img src="icons/icon-192.png?v=36" alt="" /></span>
             <strong>fiveish</strong>
           </a>
           <button class="icon-button" id="mobile-stats" aria-label="앱 설치">
@@ -878,6 +883,141 @@
           <section class="opic-result-card hidden" id="opic-result"></section>
         </section>
 
+        <section class="view" id="analysis-view">
+          <div class="page-heading analysis-heading">
+            <div>
+              <p class="eyebrow">DATA-BASED STRATEGY</p>
+              <h1>입력값을 기준으로, <em>실행 전략까지.</em></h1>
+              <p class="heading-copy">
+                목표, 업종, 타깃, 예산, 채널, 현재 문제를 입력하면 내부 분석 로직과 참고 벤치마크 기준으로 전략을 정리합니다.
+              </p>
+            </div>
+            <div class="analysis-format-pill">
+              <span><i data-lucide="shield-check"></i></span>
+              <div>
+                <small>분석 방식</small>
+                <strong>로컬 시뮬레이션</strong>
+              </div>
+            </div>
+          </div>
+
+          <section class="marketing-analysis-layout">
+            <form class="marketing-analysis-form" id="marketing-analysis-form">
+              <div class="analysis-form-intro">
+                <span><i data-lucide="sliders-horizontal"></i></span>
+                <div>
+                  <span class="section-kicker">INPUT BRIEF</span>
+                  <h2>마케팅 분석 입력값</h2>
+                  <p>입력값이 구체적일수록 신뢰도가 높아지고, 부족한 항목은 결과에서 따로 안내합니다.</p>
+                </div>
+              </div>
+
+              <div class="analysis-form-grid">
+                <label>
+                  <span>목표</span>
+                  <select id="marketing-goal">
+                    <option value="conversion">전환 증가</option>
+                    <option value="lead">리드 확보</option>
+                    <option value="awareness">브랜드 인지도 확대</option>
+                    <option value="retention">재구매/재방문 증가</option>
+                    <option value="install">앱 설치 증가</option>
+                    <option value="activation">가입 후 활성화</option>
+                    <option value="reservation">예약/방문 유도</option>
+                    <option value="community">커뮤니티 참여 확대</option>
+                    <option value="launch">신제품 런칭</option>
+                    <option value="trust">신뢰도 강화</option>
+                  </select>
+                </label>
+
+                <label>
+                  <span>업종</span>
+                  <select id="marketing-industry">
+                    <option value="ecommerce">이커머스</option>
+                    <option value="beauty">뷰티/화장품</option>
+                    <option value="education">교육/강의</option>
+                    <option value="b2b-saas">B2B SaaS</option>
+                    <option value="local-service">로컬 서비스</option>
+                    <option value="app-service">앱 서비스</option>
+                    <option value="food">식음료</option>
+                    <option value="healthcare">헬스케어</option>
+                    <option value="finance">금융/핀테크</option>
+                    <option value="content">콘텐츠/크리에이터</option>
+                  </select>
+                </label>
+
+                <label>
+                  <span>예산</span>
+                  <select id="marketing-budget">
+                    <option value="">예산 미입력</option>
+                    <option value="low-budget">낮음 · 월 100만원 이하</option>
+                    <option value="mid-budget">중간 · 월 100~500만원</option>
+                    <option value="high-budget">높음 · 월 500만원 이상</option>
+                  </select>
+                </label>
+
+                <label>
+                  <span>타깃</span>
+                  <input id="marketing-target" type="text" placeholder="예: 25~34세 직장인 여성, 자기계발 관심층" />
+                </label>
+              </div>
+
+              <div class="analysis-form-block">
+                <span>채널</span>
+                <div class="marketing-channel-grid">
+                  <label><input type="checkbox" name="marketing-channel" value="instagram" checked /><span>인스타그램</span></label>
+                  <label><input type="checkbox" name="marketing-channel" value="meta-ads" /><span>메타 광고</span></label>
+                  <label><input type="checkbox" name="marketing-channel" value="search-ads" checked /><span>검색 광고</span></label>
+                  <label><input type="checkbox" name="marketing-channel" value="naver-blog" /><span>블로그/SEO</span></label>
+                  <label><input type="checkbox" name="marketing-channel" value="youtube" /><span>유튜브</span></label>
+                  <label><input type="checkbox" name="marketing-channel" value="shorts" /><span>숏폼</span></label>
+                  <label><input type="checkbox" name="marketing-channel" value="email" /><span>이메일/CRM</span></label>
+                  <label><input type="checkbox" name="marketing-channel" value="landing" checked /><span>랜딩페이지</span></label>
+                </div>
+              </div>
+
+              <label class="analysis-textarea-field">
+                <span>현재 문제</span>
+                <textarea id="marketing-problem" rows="4" placeholder="예: 광고 클릭은 나오지만 랜딩 전환이 낮고, 어떤 메시지가 문제인지 모르겠다."></textarea>
+              </label>
+
+              <label class="analysis-textarea-field">
+                <span>제품/서비스 핵심 제안</span>
+                <textarea id="marketing-offer" rows="3" placeholder="예: 매일 5분씩 실제 표현을 연습하는 영어 튜터 앱"></textarea>
+              </label>
+
+              <div class="analysis-submit-row">
+                <p>결과는 입력값 기반 분석 결과이며, 실제 광고 계정 데이터가 아닌 참고 벤치마크와 전략 패턴을 기준으로 생성됩니다.</p>
+                <button class="primary-button" type="submit">
+                  분석 결과 생성
+                  <i data-lucide="arrow-right"></i>
+                </button>
+              </div>
+            </form>
+
+            <aside class="marketing-analysis-guide">
+              <span><i data-lucide="list-checks"></i></span>
+              <h2>결과 구성</h2>
+              <ol>
+                <li>핵심 진단 한 줄</li>
+                <li>종합 점수와 신뢰도</li>
+                <li>항목별 점수</li>
+                <li>인사이트와 문제점</li>
+                <li>개선 전략과 우선순위</li>
+                <li>바로 사용할 수 있는 카피</li>
+                <li>다음 테스트 제안</li>
+              </ol>
+            </aside>
+          </section>
+
+          <section class="marketing-analysis-result" id="marketing-analysis-result" aria-live="polite">
+            <div class="empty-state analysis-empty">
+              <span><i data-lucide="chart-no-axes-combined"></i></span>
+              <h2>입력값을 넣고 분석을 시작하세요.</h2>
+              <p>정보가 부족해도 결과는 생성되지만, 신뢰도와 보완 항목이 함께 표시됩니다.</p>
+            </div>
+          </section>
+        </section>
+
         <section class="view" id="saved-view">
           <div class="page-heading">
             <div>
@@ -920,6 +1060,10 @@
         <button data-view="opic">
           <i data-lucide="badge-check"></i>
           <span>OPIc</span>
+        </button>
+        <button data-view="analysis">
+          <i data-lucide="chart-no-axes-combined"></i>
+          <span>분석</span>
         </button>
         <button data-view="saved">
           <i data-lucide="bookmark"></i>
@@ -969,7 +1113,7 @@
           </button>
         </div>
         <div class="install-app-preview">
-          <span class="install-icon"><img src="icons/icon-192.png?v=31" alt="" /></span>
+          <span class="install-icon"><img src="icons/icon-192.png?v=36" alt="" /></span>
           <div>
             <strong>Fiveish</strong>
             <small>Real English, daily.</small>
@@ -989,6 +1133,18 @@
     </div>
 
     <script src="https://www.youtube.com/iframe_api"></script>
-    <script src="app.js?v=32"></script>
+    <script src="src/data/mockKnowledgeBase.js?v=34"></script>
+    <script src="src/data/marketingKnowledgeBase.js?v=34"></script>
+    <script src="src/data/benchmarkData.js?v=34"></script>
+    <script src="src/data/copyTemplates.js?v=34"></script>
+    <script src="src/lib/textVariation.js?v=34"></script>
+    <script src="src/lib/scoringEngine.js?v=34"></script>
+    <script src="src/lib/recommendationEngine.js?v=34"></script>
+    <script src="src/lib/resultGenerator.js?v=34"></script>
+    <script src="src/components/ScoreBreakdown.js?v=34"></script>
+    <script src="src/components/InsightList.js?v=34"></script>
+    <script src="src/components/ActionPlan.js?v=34"></script>
+    <script src="src/components/AnalysisResultCard.js?v=34"></script>
+    <script src="app.js?v=34"></script>
   </body>
 </html>
